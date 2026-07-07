@@ -8,6 +8,7 @@ export const NOT_FOUND = 404;
 export const CONFLICT = 409;
 export const UNPROCESSABLE_ENTITY = 422;
 export const INTERNAL_SERVER_ERROR = 500;
+export const SERVICE_UNAVAILABLE = 503;
 
 export const HTTP_STATUS = Object.freeze({
   OK,
@@ -20,4 +21,5 @@ export const HTTP_STATUS = Object.freeze({
   CONFLICT,
   UNPROCESSABLE_ENTITY,
   INTERNAL_SERVER_ERROR,
+  SERVICE_UNAVAILABLE,
 });

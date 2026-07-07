@@ -1,30 +1,12 @@
-import { body, validationResult } from 'express-validator';
+import { body } from 'express-validator';
 
-import { BAD_REQUEST } from '../../constants/http-status.js';
 import {
   EMAIL_INVALID,
   EMAIL_REQUIRED,
   PASSWORD_MIN_LENGTH,
   PASSWORD_REQUIRED,
-  VALIDATION_ERROR,
 } from '../../constants/messages.js';
-import ApiError from '../../utils/ApiError.js';
-
-export const validateRequest = (req, res, next) => {
-  const result = validationResult(req);
-
-  if (result.isEmpty()) {
-    next();
-    return;
-  }
-
-  const errors = result.array({ onlyFirstError: true }).map((error) => ({
-    field: error.path,
-    message: error.msg,
-  }));
-
-  next(new ApiError(BAD_REQUEST, VALIDATION_ERROR, errors));
-};
+import validateRequest from '../../utils/validateRequest.js';
 
 export const loginValidation = [
   body('email')
