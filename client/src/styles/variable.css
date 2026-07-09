@@ -1,35 +1,36 @@
 :root {
-  /* Color Palette - Premium Graphite/Warm Charcoal Journal Theme */
-  --bg-primary: #0c0d0e;
-  --bg-secondary: #121315;
-  --bg-tertiary: #1a1b1d;
+  /* Color Palette - Light Paper Theme (Dennis Snellenberg Style) */
+  --bg-primary: #eae9e9;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #ffffff;
+  --bg-dark: #1c1d20;
   
-  --text-primary: #e2e2d9;
-  --text-secondary: #929288;
-  --text-muted: #4a4a44;
+  --text-primary: #1c1d20;
+  --text-secondary: #5c5d60;
+  --text-muted: #999d9e;
   
-  --color-primary: #d1d1c7;
-  --color-primary-hover: #e2e2d9;
-  --color-secondary: #7c7c72;
-  --color-secondary-hover: #929288;
+  --color-primary: #455ce9;
+  --color-primary-hover: #3346c8;
+  --color-secondary: #3b82f6;
+  --color-secondary-hover: #2563eb;
   
-  --border-color: rgba(226, 226, 217, 0.06);
-  --border-focus: #7c7c72;
+  --border-color: rgba(28, 29, 32, 0.12);
+  --border-focus: #455ce9;
 
   /* Font Families */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Lora', Georgia, serif;
+  --font-heading: 'Inter', var(--font-sans);
   --font-mono: 'IBM Plex Mono', monospace;
 
   /* Border Radii */
-  --radius-sm: 0rem;
-  --radius-md: 0rem;
-  --radius-lg: 0rem;
-  --radius-xl: 0rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
   --radius-full: 9999px;
 
   /* Glassmorphism Specs */
-  --glass-bg: rgba(12, 13, 14, 0.65);
-  --glass-border: rgba(226, 226, 217, 0.06);
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(28, 29, 32, 0.08);
   --glass-blur: 16px;
 }
