@@ -1,185 +1,97 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
-/* ═══════════════════════════════════════════════════════════════
-   RONAK PREMJANI PORTFOLIO
-═══════════════════════════════════════════════════════════════ */
+// Magnetic wrapper component (Dennis Snellenberg Style)
+const Magnetic = ({ children, range = 0.35 }) => {
+  const ref = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
-// ── Data ────────────────────────────────────────────────────────
-const PROJECTS = [
-  {
-    id: 'proj-001',
-    name: 'PayrollOS',
-    category: 'Architecture & Fullstack',
-    year: '2026',
-    description: 'Multi-tenant HR platform. Reduced payroll processing from 12 min → 47 sec via BullMQ queuing & CQRS-lite patterns on MongoDB.',
-    bg: '#e8e2d8',
-  },
-  {
-    id: 'proj-002',
-    name: 'API Sentinel',
-    category: 'Backend & Distributed Systems',
-    year: '2025',
-    description: 'Custom API gateway unifying auth & rate-limiting across 8 Node.js microservices. Zero-downtime migration.',
-    bg: '#d8e2e8',
-  },
-  {
-    id: 'proj-003',
-    name: 'ContentVault',
-    category: 'Database & Schema Engineering',
-    year: '2025',
-    description: 'Schema-validated headless CMS backed by MongoDB. Full marketing autonomy in first sprint — zero schema breaks in 6 months.',
-    bg: '#dce8d8',
-  },
-];
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    const { left, top, width, height } = ref.current.getBoundingClientRect();
+    const centerX = left + width / 2;
+    const centerY = top + height / 2;
+    const distanceX = clientX - centerX;
+    const distanceY = clientY - centerY;
+    setPosition({ x: distanceX * range, y: distanceY * range });
+  };
 
-const TECH = [
-  'Node.js', 'Express.js', 'React', 'MongoDB', 'Redis',
-  'BullMQ', 'Docker', 'PM2', 'Tailwind CSS', 'TypeScript',
-  'PostgreSQL', 'Nginx', 'REST APIs', 'Mongoose', 'Vite',
-];
+  const handleMouseLeave = () => {
+    setPosition({ x: 0, y: 0 });
+  };
 
-const GREETINGS = ['Hello.', 'नमस्ते.', 'Bonjour.', 'Ciao.', 'Hola.', 'こんにちは.'];
+  const { x, y } = position;
 
-/* ─────────────────────────────────────────────────────────────
-   LOADER
-───────────────────────────────────────────────────────────── */
-const Loader = ({ onDone }) => {
-  const [idx, setIdx] = useState(0);
-  const [sliding, setSliding] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    let i = 0;
-    const iv = setInterval(() => {
-      i += 1;
-      if (i < GREETINGS.length) {
-        setIdx(i);
-      } else {
-        clearInterval(iv);
-        setTimeout(() => {
-          setSliding(true);
-          document.body.style.overflow = '';
-          setTimeout(onDone, 850);
-        }, 350);
-      }
-    }, 400);
-    return () => {
-      clearInterval(iv);
-      document.body.style.overflow = '';
-    };
-  }, [onDone]);
-
-  return (
-    <div
-      aria-hidden="true"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: '#1c1d20',
-        zIndex: 9000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        transform: sliding ? 'translateY(-100%)' : 'translateY(0)',
-        transition: 'transform 0.85s cubic-bezier(0.76,0,0.24,1)',
-        pointerEvents: sliding ? 'none' : 'all',
-      }}
-    >
-      <span
-        key={idx}
-        style={{
-          fontFamily: "'Sora', sans-serif",
-          fontSize: 'clamp(2.5rem, 8vw, 7rem)',
-          fontWeight: 300,
-          color: '#ffffff',
-          letterSpacing: '-0.04em',
-          animation: 'loaderWord 0.35s cubic-bezier(0.16,1,0.3,1) both',
-        }}
-      >
-        {GREETINGS[idx]}
-      </span>
-
-      {/* Curved SVG overlay at the bottom of the loader */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          width: '100%',
-          height: 'clamp(80px, 12vw, 150px)',
-          pointerEvents: 'none',
-        }}
-      >
-        <svg
-          viewBox="0 0 1440 100"
-          preserveAspectRatio="none"
-          style={{ width: '100%', height: '100%', fill: '#1c1d20' }}
-        >
-          <path
-            d={sliding ? "M0,0 Q720,0 1440,0 Z" : "M0,0 Q720,100 1440,0 Z"}
-            style={{ transition: 'd 0.85s cubic-bezier(0.76, 0, 0.24, 1)' }}
-          />
-        </svg>
-      </div>
-
-      <style>{`
-        @keyframes loaderWord {
-          from { opacity: 0; transform: translateY(20px); }
-          to   { opacity: 1; transform: translateY(0);    }
-        }
-      `}</style>
-    </div>
-  );
+  return React.cloneElement(children, {
+    ref,
+    onMouseMove: handleMouseMove,
+    onMouseLeave: handleMouseLeave,
+    style: {
+      ...children.props.style,
+      transform: `translate3d(${x}px, ${y}px, 0)`,
+      transition: x === 0 && y === 0 
+        ? 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)' 
+        : 'transform 0.08s linear'
+    }
+  });
 };
 
-/* ─────────────────────────────────────────────────────────────
-   CURSOR
-───────────────────────────────────────────────────────────── */
-const Cursor = () => {
-  const dotRef = useRef(null);
-  const viewRef = useRef(null);
-  const pos = useRef({ x: -200, y: -200 });
-  const raf = useRef(null);
+const navItems = [
+  { label: 'Perspective', id: 'perspective' },
+  { label: 'Case Files', id: 'case-files' },
+  { label: 'Toolkit', id: 'toolkit' },
+  { label: 'Contact', id: 'contact' }
+];
+
+const projects = [
+  {
+    title: 'Employee Management System',
+    category: 'Architecture & Fullstack',
+    year: '2026',
+    gradient: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)'
+  },
+  {
+    title: 'API Gateway Service',
+    category: 'Backend & Devops',
+    year: '2025',
+    gradient: 'linear-gradient(135deg, #312e81 0%, #4f46e5 100%)'
+  },
+  {
+    title: 'Content Management Platform',
+    category: 'Database & CMS',
+    year: '2025',
+    gradient: 'linear-gradient(135deg, #14532d 0%, #22c55e 100%)'
+  }
+];
+
+export const Landing = () => {
+  const [activeSection, setActiveSection] = useState('hero');
+  const [showStickyBurger, setShowStickyBurger] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [timeString, setTimeString] = useState('');
+  
+  // Follow cursor project preview state
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [activeProjectIndex, setActiveProjectIndex] = useState(null);
 
   useEffect(() => {
-    document.body.classList.add('has-custom-cursor');
-
-    const onMove = (e) => { pos.current = { x: e.clientX, y: e.clientY }; };
-
-    const tick = () => {
-      if (dotRef.current) {
-        dotRef.current.style.left = `${pos.current.x}px`;
-        dotRef.current.style.top = `${pos.current.y}px`;
-      }
-      if (viewRef.current) {
-        viewRef.current.style.left = `${pos.current.x}px`;
-        viewRef.current.style.top = `${pos.current.y}px`;
-      }
-      raf.current = requestAnimationFrame(tick);
+    const observerOptions = {
+      root: null,
+      rootMargin: '-40% 0px -40% 0px',
+      threshold: 0
     };
 
-    const onOver = (e) => {
-      if (e.target.closest('a, button, [data-hover]')) document.body.classList.add('cursor-hover');
-      if (e.target.closest('[data-work]')) viewRef.current?.classList.add('is-visible');
-    };
-    const onOut = (e) => {
-      if (e.target.closest('a, button, [data-hover]')) document.body.classList.remove('cursor-hover');
-      if (e.target.closest('[data-work]')) viewRef.current?.classList.remove('is-visible');
-    };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    }, observerOptions);
 
-    window.addEventListener('mousemove', onMove, { passive: true });
-    document.addEventListener('mouseover', onOver);
-    document.addEventListener('mouseout', onOut);
-    raf.current = requestAnimationFrame(tick);
+    const sections = document.querySelectorAll('section[id]');
+    sections.forEach((sec) => observer.observe(sec));
 
-    return () => {
-      document.body.classList.remove('has-custom-cursor', 'cursor-hover');
-      window.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseover', onOver);
-      document.removeEventListener('mouseout', onOut);
-      cancelAnimationFrame(raf.current);
-    };
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -244,1345 +156,451 @@ const Cursor = () => {
 ───────────────────────────────────────────────────────────── */
 const useReveal = (ready) => {
   useEffect(() => {
-    if (!ready) return;
-    const timer = setTimeout(() => {
-      const els = document.querySelectorAll('.rev');
-      const io = new IntersectionObserver(
-        (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('rev-in'); }),
-        { threshold: 0.08, rootMargin: '0px 0px -32px 0px' }
-      );
-      els.forEach((el) => io.observe(el));
-      return () => io.disconnect();
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [ready]);
-};
-
-/* ─────────────────────────────────────────────────────────────
-   INERTIAL SMOOTH SCROLL HOOK
-───────────────────────────────────────────────────────────── */
-const useSmoothScroll = (ready) => {
-  useEffect(() => {
-    if (!ready) return;
-    const body = document.body;
-    const main = document.querySelector('main');
-    if (!main) return;
-
-    const resize = () => {
-      body.style.height = `${main.clientHeight}px`;
-    };
-
-    const t = setTimeout(resize, 100);
-    const ro = new ResizeObserver(resize);
-    ro.observe(main);
-
-    main.style.position = 'fixed';
-    main.style.top = '0';
-    main.style.left = '0';
-    main.style.width = '100%';
-    main.style.overflow = 'hidden';
-    main.style.willChange = 'transform';
-
-    let current = 0;
-    let target = 0;
-    const ease = 0.08;
-    let frameId;
-
-    const smooth = () => {
-      target = window.scrollY;
-      current += (target - current) * ease;
-      if (Math.abs(target - current) > 0.1) {
-        main.style.transform = `translate3d(0, ${-current}px, 0)`;
-      } else {
-        main.style.transform = `translate3d(0, ${-target}px, 0)`;
-      }
-      frameId = requestAnimationFrame(smooth);
-    };
-
-    frameId = requestAnimationFrame(smooth);
-
-    return () => {
-      clearTimeout(t);
-      cancelAnimationFrame(frameId);
-      ro.disconnect();
-      body.style.height = '';
-      main.style.position = '';
-      main.style.top = '';
-      main.style.left = '';
-      main.style.width = '';
-      main.style.overflow = '';
-      main.style.transform = '';
-    };
-  }, [ready]);
-};
-
-/* ─────────────────────────────────────────────────────────────
-   MAGNETIC WRAPPER
-───────────────────────────────────────────────────────────── */
-const Magnetic = ({ children }) => {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const handleMouseMove = (e) => {
-      const { clientX, clientY } = e;
-      const { left, top, width, height } = el.getBoundingClientRect();
-      const x = clientX - (left + width / 2);
-      const y = clientY - (top + height / 2);
-      
-      el.style.transform = `translate(${x * 0.35}px, ${y * 0.35}px)`;
-      
-      const inner = el.querySelector('span, div, p');
-      if (inner) {
-        inner.style.transform = `translate(${x * 0.12}px, ${y * 0.12}px)`;
-        inner.style.transition = 'transform 0.08s ease-out';
-      }
-    };
-
-    const handleMouseLeave = () => {
-      el.style.transform = '';
-      const inner = el.querySelector('span, div, p');
-      if (inner) {
-        inner.style.transform = '';
-        inner.style.transition = 'transform 0.25s ease';
-      }
-    };
-
-    el.addEventListener('mousemove', handleMouseMove);
-    el.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      el.removeEventListener('mousemove', handleMouseMove);
-      el.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, []);
-
-  return React.cloneElement(React.Children.only(children), {
-    ref,
-    style: {
-      ...children.props.style,
-      transition: 'transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)',
-      willChange: 'transform',
-    },
-  });
-};
-
-/* ─────────────────────────────────────────────────────────────
-   NAVIGATION
-───────────────────────────────────────────────────────────── */
-const Nav = ({ heroVisible }) => {
-  const [open, setOpen] = useState(false);
-
-  const go = (id) => {
-    setOpen(false);
-    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), open ? 600 : 0);
-  };
-
-  return (
-    <>
-      {/* ── Top bar ── */}
-      <header
-        style={{
-          position: 'fixed',
-          top: 0, left: 0, right: 0,
-          zIndex: 300,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '1.4rem 5%',
-          pointerEvents: 'none',
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontSize: 11,
-            letterSpacing: '0.04em',
-            color: heroVisible ? 'white' : '#1c1d20',
-            pointerEvents: 'all',
-            transition: 'color 0.4s ease',
-          }}
-        >
-          © Code by Ronak
-        </span>
-
-        <nav style={{ display: 'flex', gap: '2.2rem', pointerEvents: 'all' }}>
-          {['Work', 'About', 'Contact'].map((label) => (
-            <button
-              key={label}
-              id={`nav-${label.toLowerCase()}`}
-              data-hover
-              onClick={() => go(label.toLowerCase())}
-              style={{
-                background: 'none',
-                border: 'none',
-                fontFamily: "'Sora', sans-serif",
-                fontSize: 13,
-                fontWeight: 400,
-                color: heroVisible ? 'white' : '#1c1d20',
-                letterSpacing: '0.01em',
-                cursor: 'none',
-                transition: 'color 0.4s ease',
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
-      </header>
-
-      {/* ── Hamburger circle ── */}
-      <Magnetic>
-        <button
-          id="hamburger"
-          data-hover
-          aria-label="Open menu"
-          onClick={() => setOpen(true)}
-          style={{
-            position: 'fixed',
-            top: '1rem', right: '1rem',
-            width: 52, height: 52,
-            borderRadius: '50%',
-            background: '#1c1d20',
-            border: 'none',
-            cursor: 'none',
-            zIndex: 301,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 5,
-            transition: 'background-color 0.3s ease',
-          }}
-        >
-          <span style={{ display: 'block', width: 18, height: 1.5, background: '#fff' }} />
-          <span style={{ display: 'block', width: 18, height: 1.5, background: '#fff' }} />
-        </button>
-      </Magnetic>
-
-      {/* ── Overlay ── */}
-      <div
-        onClick={() => setOpen(false)}
-        style={{
-          position: 'fixed', inset: 0,
-          background: 'rgba(28,29,32,0.45)',
-          zIndex: 399,
-          opacity: open ? 1 : 0,
-          pointerEvents: open ? 'all' : 'none',
-          transition: 'opacity 0.5s ease',
-        }}
-      />
-
-      {/* ── Drawer ── */}
-      <aside
-        aria-hidden={!open}
-        style={{
-          position: 'fixed',
-          top: 0, right: 0,
-          width: 'min(440px, 88vw)',
-          height: '100vh',
-          background: '#1c1d20',
-          zIndex: 400,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '4rem 3rem 3rem',
-          transform: open ? 'translateX(0)' : 'translateX(calc(100% + 100px))',
-          transition: 'transform 0.75s cubic-bezier(0.76,0,0.24,1)',
-        }}
-      >
-        {/* SVG Curve at the left edge */}
-        <svg
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: -99,
-            width: 100,
-            height: '100%',
-            fill: '#1c1d20',
-            pointerEvents: 'none',
-          }}
-          viewBox="0 0 100 600"
-          preserveAspectRatio="none"
-        >
-          <path
-            d={open ? "M100,0 L100,600 Q100,300 100,0 Z" : "M100,0 L100,600 Q0,300 100,0 Z"}
-            style={{ transition: 'd 0.75s cubic-bezier(0.76, 0, 0.24, 1)' }}
-          />
-        </svg>
-
-        {/* Close btn */}
-        <Magnetic>
-          <button
-            id="drawer-close"
-            data-hover
-            aria-label="Close menu"
-            onClick={() => setOpen(false)}
-            style={{
-              position: 'absolute',
-              top: '1rem', right: '1rem',
-              width: 52, height: 52,
-              borderRadius: '50%',
-              background: '#ffffff',
-              border: 'none',
-              cursor: 'none',
-              color: '#000',
-              fontSize: 18,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            ✕
-          </button>
-        </Magnetic>
-
-        {/* Label */}
-        <p style={{ fontFamily: "'IBM Plex Mono',monospace", fontSize: 10, letterSpacing: '0.16em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', marginBottom: '1.2rem' }}>
-          Navigation
-        </p>
-        <div style={{ width: '100%', height: 1, background: 'rgba(255,255,255,0.08)', marginBottom: '2.5rem' }} />
-
-        {/* Links */}
-        <nav style={{ flex: 1 }}>
-          {[{ l: 'Home', id: 'hero' }, { l: 'Work', id: 'work' }, { l: 'About', id: 'about' }, { l: 'Contact', id: 'contact' }].map(({ l, id }) => (
-            <button
-              key={l}
-              id={`drawer-${id}`}
-              data-hover
-              onClick={() => go(id)}
-              style={{
-                display: 'block',
-                width: '100%',
-                background: 'none',
-                border: 'none',
-                textAlign: 'left',
-                fontFamily: "'Sora',sans-serif",
-                fontSize: 'clamp(2.6rem,5.5vw,3.8rem)',
-                fontWeight: 300,
-                color: '#fff',
-                letterSpacing: '-0.03em',
-                lineHeight: 1.25,
-                cursor: 'none',
-                padding: '0.15rem 0',
-                transition: 'color 0.2s ease',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#455ce9')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = '#fff')}
-            >
-              {l}
-            </button>
-          ))}
-        </nav>
-
-        {/* Socials */}
-        <div>
-          <p style={{ fontFamily: "'IBM Plex Mono',monospace", fontSize: 10, letterSpacing: '0.16em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', marginBottom: '1rem' }}>
-            Socials
-          </p>
-          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-            {[
-              { l: 'GitHub', h: 'https://github.com' },
-              { l: 'LinkedIn', h: 'https://linkedin.com' },
-              { l: 'Twitter', h: 'https://twitter.com' },
-            ].map(({ l, h }) => (
-              <a
-                key={l}
-                id={`social-${l.toLowerCase()}`}
-                href={h}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-hover
-                style={{ fontFamily: "'Sora',sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.5)', textDecoration: 'none', transition: 'color 0.2s ease' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
-              >
-                {l}
-              </a>
-            ))}
-          </div>
-        </div>
-      </aside>
-    </>
-  );
-};
-
-/* ─────────────────────────────────────────────────────────────
-   HERO
-───────────────────────────────────────────────────────────── */
-const Hero = ({ onVisibilityChange }) => {
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    if (!sectionRef.current) return;
-    const io = new IntersectionObserver(
-      ([e]) => onVisibilityChange(e.isIntersecting),
-      { threshold: 0.1 }
-    );
-    io.observe(sectionRef.current);
-    return () => io.disconnect();
-  }, [onVisibilityChange]);
-
-  return (
-    <section
-      id="hero"
-      ref={sectionRef}
-      style={{
-        position: 'relative',
-        height: '100vh',
-        minHeight: 600,
-        background: '#ffffff',
-        overflow: 'hidden',
-      }}
-    >
-      {/* ── Location badge (left-center, sticking out from edge) ── */}
-      <div
-        className="hero-in hero-in-1"
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: '50%',
-          transform: 'translateY(-50%)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1.5rem',
-          background: '#1c1d20',
-          borderTopRightRadius: 100,
-          borderBottomRightRadius: 100,
-          borderTopLeftRadius: 0,
-          borderBottomLeftRadius: 0,
-          padding: '1.4rem 2rem 1.4rem 2.5rem',
-          zIndex: 20,
-          boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
-        }}
-      >
-        <div>
-          <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 14, fontWeight: 400, color: '#fff', lineHeight: 1.5 }}>
-            Located in<br />
-            <span style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500, fontSize: 15 }}>New Delhi, India</span>
-          </div>
-        </div>
-        <div
-          style={{
-            width: 56, height: 56,
-            borderRadius: '50%',
-            background: 'rgba(255,255,255,0.08)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <svg
-            width="26"
-            height="26"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{
-              color: '#fff',
-              animation: 'spinGlobe 15s linear infinite',
-            }}
-          >
-            <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.2" opacity="0.35" />
-            <ellipse cx="12" cy="12" rx="9" ry="3.5" stroke="currentColor" strokeWidth="1.2" />
-            <ellipse cx="12" cy="12" rx="3.5" ry="9" stroke="currentColor" strokeWidth="1.2" />
-            <line x1="12" y1="3" x2="12" y2="21" stroke="currentColor" strokeWidth="1.2" opacity="0.5" />
-            <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" strokeWidth="1.2" opacity="0.5" />
-          </svg>
-        </div>
-      </div>
-
-      {/* ── Role text (right-center) ── */}
-      <div
-        className="hero-in hero-in-2"
-        style={{
-          position: 'absolute',
-          right: '5%',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          textAlign: 'right',
-          zIndex: 20,
-        }}
-      >
-        <div style={{ fontFamily: "'IBM Plex Mono',monospace", fontSize: 11, color: 'rgba(28,29,32,0.35)', marginBottom: '0.6rem' }}>↘</div>
-        <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 'clamp(1rem,1.6vw,1.4rem)', fontWeight: 300, color: '#1c1d20', lineHeight: 1.35 }}>
-          Fullstack<br />Engineer &amp; Developer
-        </div>
-      </div>
-
-      {/* ── Centre portrait silhouette ── */}
-      <div
-        className="hero-in hero-in-3"
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: 0,
-          transform: 'translateX(-50%)',
-          width: 'clamp(280px,35vw,440px)',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'flex-end',
-          zIndex: 10,
-        }}
-      >
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            background: 'linear-gradient(180deg, rgba(28,29,32,0.07) 0%, rgba(28,29,32,0.16) 100%)',
-            borderRadius: '0 0 0 0',
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-            borderTopLeftRadius: '50% 12%',
-            borderTopRightRadius: '50% 12%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            overflow: 'hidden',
-            position: 'relative',
-          }}
-        >
-          <img
-            src="/bg.png"
-            alt="Ronak Premjani"
-            style={{
-              width: '100%',
-              height: 'auto',
-              maxHeight: '100%',
-              objectFit: 'contain',
-              display: 'block',
-              transform: 'scale(1.55)',
-              transformOrigin: 'bottom center',
-              mixBlendMode: 'multiply',
-            }}
-          />
-
-          {/* Masked Duplicate Marquee inside portrait container */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '-2%',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '100vw',
-              pointerEvents: 'none',
-              lineHeight: 1.15,
-              zIndex: 15,
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                whiteSpace: 'nowrap',
-                willChange: 'transform',
-                animation: 'marqL 20s linear infinite',
-              }}
-            >
-              {[...Array(6)].map((_, i) => (
-                <span
-                  key={i}
-                  style={{
-                    fontFamily: "'Sora',sans-serif",
-                    fontWeight: i % 2 === 0 ? 700 : 300,
-                    fontSize: 'clamp(5.5rem,13vw,13.5rem)',
-                    color: '#ffffff',
-                    WebkitTextStroke: '1.5px #000000',
-                    textStroke: '1.5px #000000',
-                    letterSpacing: '-0.04em',
-                    lineHeight: 1.15,
-                    paddingRight: '0.5em',
-                    paddingBottom: '0.15em',
-                    userSelect: 'none',
-                  }}
-                >
-                  {i % 2 === 0 ? 'Ronak Premjani' : '—'}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Bottom marquee name ── */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '0%',
-          left: 0,
-          right: 0,
-          overflow: 'hidden',
-          zIndex: 30,
-          lineHeight: 1.15,
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            whiteSpace: 'nowrap',
-            willChange: 'transform',
-            animation: 'marqL 20s linear infinite',
-          }}
-        >
-          {[...Array(6)].map((_, i) => (
-            <span
-              key={i}
-              style={{
-                fontFamily: "'Sora',sans-serif",
-                fontWeight: i % 2 === 0 ? 700 : 300,
-                fontSize: 'clamp(5.5rem,13vw,13.5rem)',
-                color: '#1c1d20',
-                letterSpacing: '-0.04em',
-                lineHeight: 1.15,
-                paddingRight: '0.5em',
-                paddingBottom: '0.15em',
-                userSelect: 'none',
-              }}
-            >
-              {i % 2 === 0 ? 'Ronak Premjani' : '—'}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Marquee keyframe */}
-      <style>{`
-        @keyframes marqL {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-      `}</style>
-    </section>
-  );
-};
-
-/* ─────────────────────────────────────────────────────────────
-   INTRO
-───────────────────────────────────────────────────────────── */
-const Intro = () => (
-  <section
-    id="about"
-    style={{
-      background: '#f5f5f3',
-      padding: '7rem 5% 0',
-    }}
-  >
-    {/* Two-col */}
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr minmax(auto,260px)',
-        gap: '3rem',
-        alignItems: 'start',
-        paddingBottom: '4.5rem',
-      }}
-    >
-      {/* Statement */}
-      <p
-        className="rev"
-        style={{
-          fontFamily: "'Sora',sans-serif",
-          fontWeight: 300,
-          fontSize: 'clamp(1.45rem,2.6vw,2.5rem)',
-          letterSpacing: '-0.025em',
-          lineHeight: 1.38,
-          color: '#1c1d20',
-          maxWidth: 640,
-        }}
-      >
-        Building scalable systems that power the digital era. No shortcuts, always on the cutting edge.
-      </p>
-
-      {/* Bio + CTA */}
-      <div
-        className="rev"
-        style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2.5rem' }}
-      >
-        <p style={{ fontFamily: "'Sora',sans-serif", fontSize: 13, fontWeight: 400, color: 'rgba(28,29,32,0.6)', lineHeight: 1.7, textAlign: 'right' }}>
-          My passion for backend architecture, distributed systems, and clean API design positions me uniquely in the engineering world.
-        </p>
-
-        {/* Circle CTA */}
-        <button
-          id="about-btn"
-          data-hover
-          onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-          style={{
-            width: 112, height: 112,
-            borderRadius: '50%',
-            background: '#1c1d20',
-            border: 'none',
-            cursor: 'none',
-            fontFamily: "'Sora',sans-serif",
-            fontSize: 12,
-            fontWeight: 400,
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'background 0.3s ease, transform 0.3s ease',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = '#455ce9'; e.currentTarget.style.transform = 'scale(1.06)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = '#1c1d20'; e.currentTarget.style.transform = 'scale(1)'; }}
-        >
-          About me
-        </button>
-      </div>
-    </div>
-
-    {/* RECENT WORK label */}
-    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-      <span
-        style={{
-          fontFamily: "'IBM Plex Mono',monospace",
-          fontSize: 10,
-          letterSpacing: '0.18em',
-          color: 'rgba(28,29,32,0.38)',
-          textTransform: 'uppercase',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        Recent Work
-      </span>
-      <div style={{ flex: 1, height: 1, background: 'rgba(28,29,32,0.10)' }} />
-    </div>
-  </section>
-);
-
-/* ─────────────────────────────────────────────────────────────
-   WORK
-───────────────────────────────────────────────────────────── */
-const Work = () => {
-  const [hov, setHov] = useState(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const onMove = (e) => setMousePos({ x: e.clientX, y: e.clientY });
-    window.addEventListener('mousemove', onMove, { passive: true });
-    return () => window.removeEventListener('mousemove', onMove);
-  }, []);
-
-  return (
-    <section id="work" style={{ background: '#f5f5f3', padding: '0 5% 5rem' }}>
-      {PROJECTS.map((proj) => (
-        <div
-          key={proj.id}
-          id={proj.id}
-          data-work
-          className="rev"
-          onMouseEnter={() => setHov(proj.id)}
-          onMouseLeave={() => setHov(null)}
-          style={{
-            borderTop: '1px solid rgba(28,29,32,0.10)',
-            padding: '2.5rem 0',
-            display: 'grid',
-            gridTemplateColumns: '1fr auto',
-            alignItems: 'center',
-            gap: '2rem',
-            cursor: 'none',
-            opacity: hov && hov !== proj.id ? 0.38 : 1,
-            transition: 'opacity 0.35s ease',
-          }}
-        >
-          <h2
-            style={{
-              fontFamily: "'Sora',sans-serif",
-              fontWeight: 300,
-              fontSize: 'clamp(2.4rem,5.5vw,5.5rem)',
-              letterSpacing: '-0.04em',
-              lineHeight: 1,
-              color: '#1c1d20',
-              transition: 'transform 0.4s cubic-bezier(0.16,1,0.3,1)',
-              transform: hov === proj.id ? 'translateX(14px)' : 'translateX(0)',
-            }}
-          >
-            {proj.name}
-          </h2>
-
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 13, fontWeight: 400, color: 'rgba(28,29,32,0.5)', lineHeight: 1.5 }}>
-              {proj.category}
-            </div>
-            <div style={{ fontFamily: "'IBM Plex Mono',monospace", fontSize: 11, color: 'rgba(28,29,32,0.28)', marginTop: '0.2rem' }}>
-              {proj.year}
-            </div>
-          </div>
-        </div>
-      ))}
-
-      {/* Last border */}
-      <div style={{ width: '100%', height: 1, background: 'rgba(28,29,32,0.10)', marginBottom: '4rem' }} />
-
-      {/* Floating preview — follows mouse */}
-      {hov && (() => {
-        const proj = PROJECTS.find((p) => p.id === hov);
-        return (
-          <div
-            style={{
-              position: 'fixed',
-              left: mousePos.x + 30,
-              top: mousePos.y - 80,
-              width: 320,
-              height: 200,
-              background: proj.bg,
-              borderRadius: 8,
-              padding: '1.75rem',
-              pointerEvents: 'none',
-              zIndex: 9990,
-              boxShadow: '0 20px 60px rgba(0,0,0,0.10)',
-              animation: 'fadeIn 0.25s ease both',
-            }}
-          >
-            <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 600, fontSize: '1.05rem', color: '#1c1d20', letterSpacing: '-0.02em', marginBottom: '0.75rem' }}>
-              {proj.name}
-            </div>
-            <div style={{ fontFamily: "'Sora',sans-serif", fontSize: 12, color: 'rgba(28,29,32,0.65)', lineHeight: 1.65 }}>
-              {proj.description}
-            </div>
-            <style>{`@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }`}</style>
-          </div>
-        );
-      })()}
-
-      {/* More work button */}
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <button
-          id="more-work"
-          data-hover
-          style={{
-            border: '1px solid rgba(28,29,32,0.18)',
-            borderRadius: 100,
-            padding: '0.9rem 2.4rem',
-            background: 'transparent',
-            fontFamily: "'Sora',sans-serif",
-            fontSize: 13,
-            fontWeight: 400,
-            color: '#1c1d20',
-            cursor: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            transition: 'background 0.3s ease, color 0.3s ease',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = '#1c1d20'; e.currentTarget.style.color = '#fff'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#1c1d20'; }}
-        >
-          More work <sup style={{ fontSize: 9, opacity: 0.5 }}>{PROJECTS.length}</sup>
-        </button>
-      </div>
-    </section>
-  );
-};
-
-/* ─────────────────────────────────────────────────────────────
-   TECH STACK MARQUEE
-───────────────────────────────────────────────────────────── */
-const TechMarquee = () => (
-  <section
-    id="stack"
-    style={{
-      background: '#f5f5f3',
-      borderTop: '1px solid rgba(28,29,32,0.07)',
-      padding: '4.5rem 0',
-      overflow: 'hidden',
-    }}
-  >
-    {/* Row 1 → left */}
-    <div style={{ overflow: 'hidden', marginBottom: '1.4rem' }}>
-      <div style={{ display: 'flex', whiteSpace: 'nowrap', animation: 'marqL 30s linear infinite' }}>
-        {[...TECH, ...TECH].map((t, i) => (
-          <span
-            key={i}
-            style={{
-              fontFamily: "'Sora',sans-serif",
-              fontSize: 'clamp(0.78rem,1.1vw,1rem)',
-              fontWeight: 300,
-              color: 'rgba(28,29,32,0.45)',
-              paddingRight: '3rem',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {t}
-          </span>
-        ))}
-      </div>
-    </div>
-
-    {/* Row 2 → right */}
-    <div style={{ overflow: 'hidden' }}>
-      <div style={{ display: 'flex', whiteSpace: 'nowrap', animation: 'marqR 26s linear infinite' }}>
-        {[...TECH, ...TECH].map((t, i) => (
-          <span
-            key={i}
-            style={{
-              fontFamily: "'IBM Plex Mono',monospace",
-              fontSize: 'clamp(0.68rem,0.95vw,0.88rem)',
-              fontWeight: 300,
-              color: 'rgba(28,29,32,0.22)',
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              paddingRight: '3rem',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {t}
-          </span>
-        ))}
-      </div>
-    </div>
-
-    <style>{`
-      @keyframes marqL { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-      @keyframes marqR { from{transform:translateX(-50%)} to{transform:translateX(0)} }
-    `}</style>
-  </section>
-);
-
-
-
-/* ─────────────────────────────────────────────────────────────
-   LOCAL TIME COMPONENT
-───────────────────────────────────────────────────────────── */
-const LocalTime = () => {
-  const [time, setTime] = useState('');
-
-  useEffect(() => {
-    const updateTime = () => {
-      const date = new Date();
-      const timeStr = date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      });
-
-      const offsetMinutes = date.getTimezoneOffset();
-      const offsetHours = -offsetMinutes / 60;
-      const offsetSign = offsetHours >= 0 ? '+' : '-';
-      const absHours = Math.floor(Math.abs(offsetHours));
-      const mins = Math.abs(offsetMinutes) % 60;
-      const offsetStr = `GMT${offsetSign}${absHours}${mins ? `:${mins}` : ''}`;
-
-      setTime(`${timeStr} ${offsetStr}`);
-    };
-
-    updateTime();
-    const timer = setInterval(updateTime, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  return <span style={{ color: '#fff', fontSize: '14px', fontFamily: "'Sora',sans-serif" }}>{time}</span>;
-};
-
-/* ─────────────────────────────────────────────────────────────
-   FOOTER / CONTACT
-───────────────────────────────────────────────────────────── */
-const Footer = () => {
-  const footerRef = useRef(null);
-  const [curveY, setCurveY] = useState(0);
-
-  useEffect(() => {
     const handleScroll = () => {
-      const el = footerRef.current;
-      if (!el) return;
-
-      const rect = el.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-
-      if (rect.top < viewportHeight) {
-        const delta = viewportHeight - rect.top;
-        const progress = Math.min(1, Math.max(0, delta / viewportHeight));
-        
-        // Dennis's curve bends dynamically.
-        // It starts fully curved (Y = 0) and bends/flattens out to Y = 140 as you scroll down.
-        const currentY = Math.round(140 * progress);
-        setCurveY(currentY);
+      if (window.scrollY > 200) {
+        setShowStickyBurger(true);
+      } else {
+        setShowStickyBurger(false);
+        setIsMenuOpen(false);
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return (
-    <>
-      {/* ── Full-width curved arch — same dark color as footer ── */}
-      <div
-        aria-hidden="true"
-        style={{
-          background: '#f5f5f3',
-          lineHeight: 0,
-          marginBottom: -2,
-        }}
-      >
-        <svg
-          viewBox="0 0 1440 140"
-          preserveAspectRatio="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ display: 'block', width: '100%', height: 'clamp(80px,10vw,140px)' }}
-        >
-          {/* Smooth cubic bezier arch — dynamic curve path bending as you scroll */}
-          <path d={`M0,140 C360,${curveY} 1080,${curveY} 1440,140 L1440,140 L0,140 Z`} fill="#1c1d20" />
-        </svg>
-      </div>
+  // Update dynamic clock for India timezone
+  useEffect(() => {
+    const updateTime = () => {
+      const options = {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      };
+      setTimeString(new Intl.DateTimeFormat('en-US', options).format(new Date()));
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
-      <footer
-        id="contact"
-        ref={footerRef}
-        style={{
-          background: '#1c1d20',
-          padding: '6rem 8% 4rem',
-          position: 'relative',
-        }}
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleProjectMouseMove = (e) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
+
+  return (
+    <main className="w-full bg-[#eae9e9] text-[#1c1d20] font-sans scroll-smooth relative overflow-x-hidden">
+      
+      {/* ══════ Circular Sticky Burger Button ══════ */}
+      <button
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        aria-label="Toggle menu"
+        className={`fixed right-[5%] top-8 w-14 h-14 bg-[#1c1d20] border-0 hover:bg-[#455ce9] rounded-full flex items-center justify-center z-50 transition-all duration-500 scale-100 hover:scale-105 active:scale-95 cursor-pointer shadow-lg ${
+          showStickyBurger ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-4 scale-50 pointer-events-none'
+        }`}
       >
-      {/* Title block & button row */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '3rem',
-          marginBottom: '5rem',
-        }}
+        <div className="flex flex-col gap-[5px] justify-center items-center pointer-events-none">
+          <span className={`block h-[1px] bg-[#eae9e9] transition-all duration-300 ${
+            isMenuOpen ? 'w-5 rotate-45 translate-y-[3px]' : 'w-5'
+          }`} />
+          <span className={`block h-[1px] bg-[#eae9e9] transition-all duration-300 ${
+            isMenuOpen ? 'w-5 -rotate-45 -translate-y-[3px]' : 'w-5'
+          }`} />
+        </div>
+      </button>
+
+      {/* Side Menu Drawer Overlay Backdrop */}
+      <div 
+        className={`fixed inset-0 bg-black/45 z-30 transition-opacity duration-500 ${
+          isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setIsMenuOpen(false)}
+      />
+
+      {/* ══════ Side Drawer Menu ══════ */}
+      <aside
+        className={`fixed right-0 top-0 bottom-0 w-[290px] sm:w-[380px] bg-[#1c1d20] text-[#eae9e9] z-40 flex flex-col justify-between pt-32 pb-16 px-10 sm:px-12 transition-transform duration-500 ease-in-out ${
+          isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
       >
-        {/* Left Side: Avatar + "Let's work together" */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
-          {/* Avatar */}
-          <div
-            style={{
-              width: 'clamp(60px, 6vw, 80px)',
-              height: 'clamp(60px, 6vw, 80px)',
-              borderRadius: '50%',
-              overflow: 'hidden',
-              background: 'rgba(255,255,255,0.08)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: "'Sora',sans-serif",
-              fontWeight: 500,
-              fontSize: 'clamp(1.2rem, 1.8vw, 1.8rem)',
-              color: 'rgba(255,255,255,0.7)',
-              flexShrink: 0,
-            }}
+        <div className="flex flex-col gap-6">
+          <span className="font-mono text-[9px] tracking-[0.25em] text-[#999d9e] uppercase select-none">
+            [ NAVIGATION ]
+          </span>
+          <nav className="flex flex-col gap-6 mt-4">
+            <a
+              href="#hero"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection('hero');
+                setIsMenuOpen(false);
+              }}
+              className="group flex items-baseline gap-4 py-1.5 cursor-pointer"
+            >
+              <span className={`font-mono text-[9.5px] ${activeSection === 'hero' ? 'text-white' : 'text-[#999d9e] group-hover:text-[#eae9e9]'}`}>
+                00
+              </span>
+              <span className={`text-2xl lg:text-3xl font-light tracking-tight transition-colors duration-300 ${
+                activeSection === 'hero' ? 'text-white' : 'text-[#999d9e] group-hover:text-white'
+              }`}>
+                Home
+              </span>
+            </a>
+            {navItems.map((item, idx) => {
+              const isActive = activeSection === item.id;
+              
+              return (
+                <a
+                  key={item.label}
+                  href={`#${item.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection(item.id);
+                    setIsMenuOpen(false);
+                  }}
+                  className="group flex items-baseline gap-4 py-1.5 cursor-pointer"
+                >
+                  <span className={`font-mono text-[9.5px] ${isActive ? 'text-white' : 'text-[#999d9e] group-hover:text-[#eae9e9]'}`}>
+                    0{(idx + 1)}
+                  </span>
+                  <span className={`text-2xl lg:text-3xl font-light tracking-tight transition-colors duration-300 ${
+                    isActive ? 'text-white' : 'text-[#999d9e] group-hover:text-white'
+                  }`}>
+                    {item.label}
+                  </span>
+                </a>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Drawer Footer info */}
+        <div className="flex flex-col gap-2 font-mono text-[9px] tracking-[0.15em] text-[#999d9e] uppercase">
+          <div>LOC. NEW DELHI, IN // {timeString}</div>
+          <div>© {new Date().getFullYear()} RONAK PREMJANI</div>
+        </div>
+      </aside>
+
+      {/* ══════ Global Fixed Header ══════ */}
+      <header
+        className="absolute left-[8%] right-[8%] top-8 flex justify-between items-start z-30 pointer-events-none select-none"
+      >
+        {/* Author / Title */}
+        <Magnetic range={0.25}>
+          <div 
+            className="flex items-center gap-1.5 pointer-events-auto cursor-pointer font-sans"
+            onClick={() => scrollToSection('hero')}
           >
-            RP
+            <span className="text-[14px] font-semibold tracking-tight text-[#1c1d20]">
+              © Code by Ronak
+            </span>
+          </div>
+        </Magnetic>
+
+        {/* Time / Location */}
+        <div className="hidden md:flex flex-col items-center">
+          <span className="font-mono text-[9.5px] tracking-[0.18em] text-text-secondary uppercase">
+            New Delhi, India // {timeString}
+          </span>
+        </div>
+
+        {/* Navigation links (Cover status) */}
+        <nav className={`hidden lg:flex items-center gap-8 pointer-events-auto transition-all duration-500 ${
+          showStickyBurger ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'
+        }`}>
+          {navItems.map((item) => (
+            <Magnetic key={item.label} range={0.3}>
+              <a
+                href={`#${item.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection(item.id);
+                }}
+                className="group relative py-1 flex flex-col items-center cursor-pointer"
+              >
+                <span className="font-sans text-[13px] font-medium text-[#1c1d20] hover:text-[#455ce9] transition-colors duration-300">
+                  {item.label}
+                </span>
+                <span className="block w-[4px] h-[4px] bg-[#455ce9] rounded-full mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </a>
+            </Magnetic>
+          ))}
+        </nav>
+      </header>
+
+      {/* ══════ CHAPTER 01: HERO SECTION ══════ */}
+      <section
+        id="hero"
+        className="relative h-screen w-full flex flex-col justify-between pt-36 pb-0"
+      >
+        <div className="px-[8%] flex flex-col lg:flex-row justify-between items-start lg:items-end w-full h-[60%] lg:h-[70%]">
+          {/* Main Statement Title */}
+          <div className="max-w-[36rem] z-10 flex flex-col gap-4">
+            {/* Spinning Globe indicator */}
+            <div className="flex items-center gap-3">
+              <svg className="w-5 h-5 animate-spin text-[#455ce9]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <circle cx="12" cy="12" r="10" strokeDasharray="6 6" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                <path d="M2 12h20" />
+              </svg>
+              <span className="font-mono text-[9px] tracking-[0.2em] text-[#455ce9] uppercase font-bold">
+                Located in India
+              </span>
+            </div>
+            <h1 className="font-heading font-semibold text-4xl lg:text-[3.25rem] text-[#1c1d20] tracking-tight leading-[1.15]">
+              Software Architect <br />
+              & Full-Stack Developer.
+            </h1>
           </div>
 
-          <h2
-            className="rev"
-            style={{
-              fontFamily: "'Sora',sans-serif",
-              fontWeight: 300,
-              fontSize: 'clamp(3rem, 6.5vw, 6.5rem)',
-              letterSpacing: '-0.04em',
-              lineHeight: 1.1,
-              color: '#fff',
-              margin: 0,
-            }}
-          >
-            Let's work<br />together
+          {/* Portrait frame container */}
+          <div className="absolute right-[8%] top-[16%] w-[290px] h-[360px] lg:w-[350px] lg:h-[440px] bg-[#d5d4d4] overflow-hidden shadow-2xl flex items-center justify-center select-none pointer-events-auto">
+            <img 
+              src="/engineer_portrait.png" 
+              alt="Portrait" 
+              className="w-full h-full object-cover filter grayscale contrast-110 hover:scale-105 transition-transform duration-[1.5s] ease-out" 
+            />
+          </div>
+        </div>
+
+        {/* Huge Scrolling Banner Marquee (Dennis Snellenberg Ticker) */}
+        <div className="w-full overflow-hidden whitespace-nowrap select-none pointer-events-none pb-4 relative z-10">
+          <div className="flex w-[200%] border-b border-border-color pb-4">
+            <div className="animate-marquee font-heading text-[12vw] font-medium uppercase text-[#1c1d20] tracking-tighter leading-none pr-8">
+              Ronak Premjani — Developer — Architect —&nbsp;
+            </div>
+            <div className="animate-marquee font-heading text-[12vw] font-medium uppercase text-[#1c1d20] tracking-tighter leading-none pr-8">
+              Ronak Premjani — Developer — Architect —&nbsp;
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════ CHAPTER 02: ABOUT / INTRODUCTION SECTION ══════ */}
+      <section
+        id="perspective"
+        className="relative min-h-screen w-full flex flex-col justify-center py-28 lg:py-36 px-[8%] bg-[#f5f5f5] border-b border-border-color"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 w-full items-start">
+          {/* Section Marker */}
+          <div className="lg:col-span-3 flex flex-col gap-2">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-text-muted uppercase">
+              // 01. Perspective
+            </span>
+          </div>
+
+          {/* High-impact Intro copy */}
+          <div className="lg:col-span-6 flex flex-col gap-8">
+            <p className="font-sans font-light text-2xl lg:text-3xl text-[#1c1d20] tracking-tight leading-[1.4] select-text">
+              Helping teams build robust backend architectures, scalable database schemas, and highly polished user interfaces. Together, we define clean engineering guidelines and build durable systems.
+            </p>
+          </div>
+
+          {/* Magnetic CTA round button */}
+          <div className="lg:col-span-3 flex justify-start lg:justify-end">
+            <Magnetic range={0.35}>
+              <div 
+                className="w-40 h-40 bg-[#1c1d20] hover:bg-[#455ce9] transition-colors duration-300 rounded-full flex items-center justify-center text-[#eae9e9] font-sans text-[14px] font-medium tracking-wide cursor-pointer shadow-lg"
+                onClick={() => scrollToSection('case-files')}
+              >
+                Selected Work
+              </div>
+            </Magnetic>
+          </div>
+        </div>
+
+        {/* Split Grid Details */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mt-28 border-t border-border-color pt-16">
+          <div className="lg:col-span-3">
+            <span className="font-mono text-[9px] tracking-[0.2em] text-[#999d9e] uppercase">
+              Core values
+            </span>
+          </div>
+          <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-3 gap-8 text-[15px] leading-relaxed text-text-secondary select-text">
+            <div>
+              <h4 className="font-semibold text-[#1c1d20] mb-3 text-lg">Understanding Before Building</h4>
+              <p className="font-light">Restraint begins with comprehension. We do not write code to discover the problem; we write code once the problem is solved in thought. Code is the byproduct of clarity.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-[#1c1d20] mb-3 text-lg">Simplicity Over Cleverness</h4>
+              <p className="font-light">Clever code is a technical liability. True engineering craftsmanship lies in choosing the most obvious, readable, and boring solution. A system should be easy to understand.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-[#1c1d20] mb-3 text-lg">Systems Over Features</h4>
+              <p className="font-light">Features do not exist in isolation. Every addition must respect, protect, and integrate seamlessly into the overall system architecture. We build cohesive software ecosystems.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════ CHAPTER 03: SELECTED WORK SECTION ══════ */}
+      <section
+        id="case-files"
+        className="relative min-h-screen w-full py-28 lg:py-36 px-[8%] bg-[#eae9e9] relative"
+        onMouseMove={handleProjectMouseMove}
+      >
+        {/* Section Header */}
+        <div className="mb-14">
+          <span className="font-mono text-[10px] tracking-[0.2em] text-text-muted uppercase">
+            // 02. Selected Work
+          </span>
+          <h2 className="text-3xl lg:text-4xl font-semibold tracking-tight text-[#1c1d20] mt-3">
+            Recent Projects
           </h2>
         </div>
 
-        {/* Diagonal curved arrow */}
-        <svg
-          width="48"
-          height="48"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+        {/* Selected Work Rows container */}
+        <div className="flex flex-col border-b border-border-color">
+          {projects.map((proj, idx) => (
+            <div
+              key={proj.title}
+              onMouseEnter={() => setActiveProjectIndex(idx)}
+              onMouseLeave={() => setActiveProjectIndex(null)}
+              onClick={() => scrollToSection('contact')}
+              className="py-10 lg:py-14 flex flex-col md:flex-row justify-between items-start md:items-center border-t border-border-color hover:opacity-40 transition-opacity duration-300 cursor-pointer select-none"
+            >
+              <h3 className="text-2xl lg:text-3xl font-light text-[#1c1d20] tracking-tight">
+                {proj.title}
+              </h3>
+              <div className="flex gap-12 items-center mt-4 md:mt-0 font-mono text-[11px] uppercase tracking-wider text-text-secondary">
+                <span>{proj.category}</span>
+                <span>{proj.year}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ══════ Cursor Follow Preview Card ══════ */}
+        <div
+          className="fixed pointer-events-none z-50 rounded-lg overflow-hidden transition-all duration-300 ease-out select-none shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
           style={{
-            color: 'rgba(255,255,255,0.25)',
-            display: 'none',
+            left: mousePosition.x - 160,
+            top: mousePosition.y - 110,
+            width: '320px',
+            height: '220px',
+            transform: `scale(${activeProjectIndex !== null ? 1 : 0})`,
+            opacity: activeProjectIndex !== null ? 1 : 0,
+            transition: 'transform 0.4s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.3s'
           }}
-          className="footer-arrow"
         >
-          <path
-            d="M5 5L19 19M19 19H11M19 19V11"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-
-        {/* Right Side: Giant Magnetic "Get in touch" button */}
-        <Magnetic>
-          <a
-            id="get-in-touch"
-            href="mailto:ronak@example.com"
-            data-hover
-            style={{
-              width: 'clamp(140px, 12vw, 175px)',
-              height: 'clamp(140px, 12vw, 175px)',
-              borderRadius: '50%',
-              background: '#ffffff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: "'Sora',sans-serif",
-              fontSize: 'clamp(0.95rem, 1.2vw, 1.15rem)',
-              fontWeight: 400,
-              color: '#000000',
-              textDecoration: 'none',
-              textAlign: 'center',
-              lineHeight: 1.4,
-              transition: 'background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease',
-              flexShrink: 0,
-              border: 'none',
-              cursor: 'none',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#000000';
-              e.currentTarget.style.color = '#ffffff';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#ffffff';
-              e.currentTarget.style.color = '#000000';
-            }}
+          <div 
+            className="w-full h-full flex flex-col transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateY(-${activeProjectIndex * 100}%)` }}
           >
-            Get in touch
-          </a>
-        </Magnetic>
-      </div>
-
-      {/* Actionable buttons: Email and Phone */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '1.5rem',
-          flexWrap: 'wrap',
-          marginBottom: '6rem',
-        }}
-      >
-        <Magnetic>
-          <a
-            id="email-btn"
-            href="mailto:ronak@example.com"
-            data-hover
-            style={{
-              border: '1px solid rgba(255,255,255,0.18)',
-              borderRadius: 100,
-              padding: 'clamp(1.2rem, 1.8vw, 1.8rem) clamp(2rem, 3vw, 3.2rem)',
-              fontFamily: "'Sora',sans-serif",
-              fontSize: 'clamp(1rem, 1.4vw, 1.3rem)',
-              color: '#fff',
-              textDecoration: 'none',
-              display: 'inline-block',
-              transition: 'background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease',
-              cursor: 'none',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#ffffff';
-              e.currentTarget.style.borderColor = '#ffffff';
-              e.currentTarget.style.color = '#000000';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)';
-              e.currentTarget.style.color = '#ffffff';
-            }}
-          >
-            ronak@example.com
-          </a>
-        </Magnetic>
-
-        <Magnetic>
-          <a
-            id="phone-btn"
-            href="tel:+910000000000"
-            data-hover
-            style={{
-              border: '1px solid rgba(255,255,255,0.18)',
-              borderRadius: 100,
-              padding: 'clamp(1.2rem, 1.8vw, 1.8rem) clamp(2rem, 3vw, 3.2rem)',
-              fontFamily: "'Sora',sans-serif",
-              fontSize: 'clamp(1rem, 1.4vw, 1.3rem)',
-              color: '#fff',
-              textDecoration: 'none',
-              display: 'inline-block',
-              transition: 'background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease',
-              cursor: 'none',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#ffffff';
-              e.currentTarget.style.borderColor = '#ffffff';
-              e.currentTarget.style.color = '#000000';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)';
-              e.currentTarget.style.color = '#ffffff';
-            }}
-          >
-            +91 00000 00000
-          </a>
-        </Magnetic>
-      </div>
-
-      {/* Bottom Bar: Version, Local Time, Socials */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '2.5rem',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
-          paddingTop: '2.5rem',
-        }}
-      >
-        {/* Version */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-          <span
-            style={{
-              fontFamily: "'IBM Plex Mono',monospace",
-              fontSize: '10px',
-              color: 'rgba(255,255,255,0.3)',
-              letterSpacing: '0.08em',
-            }}
-          >
-            VERSION
-          </span>
-          <span style={{ fontFamily: "'Sora',sans-serif", fontSize: '14px', color: '#fff' }}>
-            2026 © Edition
-          </span>
-        </div>
-
-        {/* Local Time */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-          <span
-            style={{
-              fontFamily: "'IBM Plex Mono',monospace",
-              fontSize: '10px',
-              color: 'rgba(255,255,255,0.3)',
-              letterSpacing: '0.08em',
-            }}
-          >
-            LOCAL TIME
-          </span>
-          <LocalTime />
-        </div>
-
-        {/* Socials */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-          <span
-            style={{
-              fontFamily: "'IBM Plex Mono',monospace",
-              fontSize: '10px',
-              color: 'rgba(255,255,255,0.3)',
-              letterSpacing: '0.08em',
-            }}
-          >
-            SOCIALS
-          </span>
-          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-            {[
-              { l: 'GitHub', h: 'https://github.com' },
-              { l: 'LinkedIn', h: 'https://linkedin.com' },
-              { l: 'Twitter', h: 'https://twitter.com' },
-              { l: 'Instagram', h: 'https://instagram.com' },
-            ].map(({ l, h }) => (
-              <Magnetic key={l}>
-                <a
-                  id={`footer-${l.toLowerCase()}`}
-                  href={h}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-hover
-                  className="footer-social-link"
-                  style={{
-                    fontFamily: "'Sora',sans-serif",
-                    fontSize: '13px',
-                    color: '#fff',
-                    textDecoration: 'none',
-                    transition: 'color 0.2s ease',
-                    cursor: 'none',
-                    display: 'inline-block',
-                  }}
-                >
-                  {l}
-                </a>
-              </Magnetic>
+            {projects.map((proj, idx) => (
+              <div 
+                key={idx}
+                className="w-full h-full flex items-center justify-center text-white font-mono text-xs uppercase font-medium tracking-[0.2em]"
+                style={{ background: proj.gradient }}
+              >
+                [ {proj.title} ]
+              </div>
             ))}
           </div>
         </div>
-      </div>
-    </footer>
-  </>
-  );
-};
 
-/* ─────────────────────────────────────────────────────────────
-   MAIN
-───────────────────────────────────────────────────────────── */
-export const Landing = () => {
-  const [ready, setReady] = useState(false);
-  const [heroVisible, setHeroVisible] = useState(true);
+        {/* Grid outline detailing toolkit */}
+        <div id="toolkit" className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mt-28 border-t border-border-color pt-16">
+          <div className="lg:col-span-3">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-text-muted uppercase">
+              // 03. Development Toolkit
+            </span>
+          </div>
+          <div className="lg:col-span-9 grid grid-cols-2 md:grid-cols-4 gap-8 select-text">
+            <div>
+              <h5 className="font-semibold text-text-primary text-[14px] uppercase tracking-wider mb-4">Backend</h5>
+              <div className="flex flex-col gap-2 text-text-secondary text-sm">
+                <span>Node.js / Express</span>
+                <span>REST / GraphQL APIs</span>
+                <span>Distributed Architectures</span>
+              </div>
+            </div>
+            <div>
+              <h5 className="font-semibold text-text-primary text-[14px] uppercase tracking-wider mb-4">Databases</h5>
+              <div className="flex flex-col gap-2 text-text-secondary text-sm">
+                <span>MongoDB / Mongoose</span>
+                <span>PostgreSQL</span>
+                <span>Redis (Cache & DAG)</span>
+              </div>
+            </div>
+            <div>
+              <h5 className="font-semibold text-text-primary text-[14px] uppercase tracking-wider mb-4">Frontend</h5>
+              <div className="flex flex-col gap-2 text-text-secondary text-sm">
+                <span>React / Single-Page Apps</span>
+                <span>Tailwind CSS</span>
+                <span>Vite Bundler</span>
+              </div>
+            </div>
+            <div>
+              <h5 className="font-semibold text-text-primary text-[14px] uppercase tracking-wider mb-4">Practices</h5>
+              <div className="flex flex-col gap-2 text-text-secondary text-sm">
+                <span>Precision Engineering</span>
+                <span>API Design & Outboxes</span>
+                <span>Performance Optimization</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  const onLoaderDone = useCallback(() => setReady(true), []);
+      {/* ══════ CHAPTER 04: FOOTER SECTION (CTA & Socials) ══════ */}
+      <section
+        id="contact"
+        className="relative bg-[#1c1d20] text-[#eae9e9] py-28 lg:py-36 px-[8%]"
+      >
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-12 border-b border-border-color/30 pb-20">
+          {/* Giant Title CTA */}
+          <div className="flex items-center gap-6">
+            <div className="w-14 h-14 bg-gray-500 overflow-hidden rounded-full flex items-center justify-center shadow-lg border border-white/20 select-none">
+              <img src="/engineer_portrait.png" alt="Profile" className="w-full h-full object-cover grayscale" />
+            </div>
+            <h2 className="font-heading font-light text-5xl lg:text-[4.5rem] tracking-tight leading-none text-white">
+              Let's work <br />
+              together.
+            </h2>
+          </div>
 
-  useReveal(ready);
-  useSmoothScroll(ready);
+          {/* Magnetic Giant Button */}
+          <Magnetic range={0.45}>
+            <a
+              href="mailto:hello@example.com"
+              className="w-48 h-48 bg-[#455ce9] hover:bg-[#3346c8] transition-colors duration-300 rounded-full flex items-center justify-center text-white text-[15px] font-medium tracking-wide shadow-lg cursor-pointer border border-transparent select-none z-10"
+            >
+              Get in touch
+            </a>
+          </Magnetic>
+        </div>
 
-  return (
-    <>
-      {!ready && <Loader onDone={onLoaderDone} />}
-      <Cursor />
-      <Nav heroVisible={heroVisible} />
+        {/* Footer Base grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-14 items-center">
+          {/* Left block info */}
+          <div className="flex flex-col sm:flex-row gap-6 sm:gap-12 text-sm text-[#999d9e] font-sans">
+            <a href="mailto:hello@example.com" className="hover:text-white transition-colors duration-300">
+              hello@example.com
+            </a>
+            <a href="tel:+919999999999" className="hover:text-white transition-colors duration-300">
+              +91 99999 99999
+            </a>
+          </div>
 
-      <main style={{ overflowX: 'hidden' }}>
-        <Hero onVisibilityChange={setHeroVisible} />
-        <Intro />
-        <Work />
-        <TechMarquee />
-        <Footer />
-      </main>
+          {/* Right block socials */}
+          <div className="flex justify-start lg:justify-end gap-8 text-[13px] font-mono tracking-wider text-[#999d9e] uppercase select-none">
+            <a href="#github" className="hover:text-white transition-colors duration-300">GitHub</a>
+            <a href="#linkedin" className="hover:text-white transition-colors duration-300">LinkedIn</a>
+            <a href="#resume" className="hover:text-white transition-colors duration-300">Resume</a>
+          </div>
+        </div>
+      </section>
 
-      {/* Global reveal styles */}
-      <style>{`
-        .rev {
-          opacity: 0;
-          transform: translateY(22px);
-          transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1), transform 0.85s cubic-bezier(0.16,1,0.3,1);
-        }
-        .rev-in { opacity: 1 !important; transform: translateY(0) !important; }
-        .rev:nth-child(2) { transition-delay: 100ms; }
-        .rev:nth-child(3) { transition-delay: 200ms; }
-        body.has-custom-cursor, body.has-custom-cursor * { cursor: none !important; }
-        input, textarea { cursor: text !important; }
-
-        .footer-social-link {
-          position: relative;
-          text-decoration: none;
-        }
-        .footer-social-link::after {
-          content: '';
-          position: absolute;
-          bottom: -2px;
-          left: 0;
-          width: 100%;
-          height: 1px;
-          background: currentColor;
-          transform: scaleX(0);
-          transform-origin: right;
-          transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .footer-social-link:hover::after {
-          transform: scaleX(1);
-          transform-origin: left;
-        }
-        @keyframes spinGlobe {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
-        @media (min-width: 768px) {
-          .footer-arrow {
-            display: block !important;
-          }
-        }
-      `}</style>
-    </>
+    </main>
   );
 };
 
