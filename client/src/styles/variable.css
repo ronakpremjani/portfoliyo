@@ -1,0 +1,54 @@
+:root {
+  /* ── Dennis-Inspired Color System ─────────────────────────
+     White backgrounds. Charcoal text. Royal blue accent.
+     Every color has exactly one purpose.
+  ─────────────────────────────────────────────────────────── */
+
+  /* Backgrounds */
+  --bg-primary:    #f5f5f3;  /* warm off-white — main body */
+  --bg-secondary:  #ebebea;  /* slightly deeper — cards/dividers */
+  --bg-hero:       #999d9e;  /* muted silver-grey — hero section */
+  --bg-dark:       #1c1d20;  /* charcoal off-black — footer/dark sections */
+
+  /* Text */
+  --text-primary:   #1c1d20;              /* charcoal — main text */
+  --text-secondary: rgba(28, 29, 32, 0.65); /* dimmed charcoal */
+  --text-muted:     rgba(28, 29, 32, 0.35); /* very faint */
+  --text-light:     #ffffff;               /* white — on dark sections */
+  --text-light-dim: rgba(255,255,255,0.65);
+
+  /* Accent — royal blue, used sparingly */
+  --color-accent:        #455ce9;
+  --color-accent-hover:  #3449d4;
+  --color-accent-dim:    rgba(69, 92, 233, 0.10);
+
+  /* Aliases kept for Tailwind compatibility */
+  --color-primary:       var(--color-accent);
+  --color-primary-hover: var(--color-accent-hover);
+  --color-secondary:     var(--text-secondary);
+
+  /* Borders */
+  --border-color: rgba(28, 29, 32, 0.10);
+  --border-light: rgba(255, 255, 255, 0.12);
+  --border-focus: var(--color-accent);
+
+  /* Font Families */
+  --font-sans:    'Sora', system-ui, -apple-system, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Menlo', monospace;
+  --font-heading: 'Sora', var(--font-sans);
+
+  /* Spacing rhythm */
+  --margin-h: 6%;
+
+  /* Easing — same as Dennis's GSAP power2.inOut feel */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-inout:  cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-axiom:  cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* Border Radii */
+  --radius-sm:   0.25rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   1rem;
+  --radius-xl:   1.5rem;
+  --radius-full: 9999px;
+}
