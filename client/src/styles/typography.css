@@ -1,65 +1,30 @@
-/* Typography Base Styles */
+/* Typography — Sora geometric sans, clean and editorial */
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   color: var(--text-primary);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0;
 }
 
-h1 {
-  font-size: 2.25rem; /* 36px */
-}
-
-@media (min-width: 768px) {
-  h1 {
-    font-size: 3rem; /* 48px */
-  }
-}
-
-h2 {
-  font-size: 1.75rem; /* 28px */
-}
-
-@media (min-width: 768px) {
-  h2 {
-    font-size: 2.25rem; /* 36px */
-  }
-}
-
-h3 {
-  font-size: 1.5rem; /* 24px */
-}
-
-h4 {
-  font-size: 1.25rem; /* 20px */
-}
-
-p, span, li, label, input, textarea {
+p {
   font-family: var(--font-sans);
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.65;
+  margin: 0;
 }
 
 a {
   text-decoration: none;
-  transition: color 0.2s ease;
+  color: inherit;
+  transition: color 0.25s ease;
+}
+
+button {
   font-family: var(--font-sans);
-}
-
-a:hover {
-  color: var(--color-primary);
-}
-
-/* Gradient text utility for headings */
-.text-gradient-primary {
-  background: linear-gradient(135deg, #ffffff 0%, var(--text-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.text-gradient-accent {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
