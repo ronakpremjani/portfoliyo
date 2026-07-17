@@ -64,6 +64,10 @@ const projects = [
 ];
 
 export const Landing = () => {
+  // Custom cursor refs
+  const dotRef = useRef(null);
+  const viewRef = useRef(null);
+
   const [activeSection, setActiveSection] = useState('hero');
   const [showStickyBurger, setShowStickyBurger] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -94,67 +98,7 @@ export const Landing = () => {
     return () => observer.disconnect();
   }, []);
 
-  return (
-    <>
-      <div
-        ref={dotRef}
-        aria-hidden="true"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: 10,
-          height: 10,
-          borderRadius: '50%',
-          background: '#1c1d20',
-          pointerEvents: 'none',
-          zIndex: 99999,
-          transform: 'translate(-50%,-50%)',
-          transition: 'width 0.35s ease, height 0.35s ease',
-          mixBlendMode: 'difference',
-        }}
-      />
-      <div
-        ref={viewRef}
-        aria-hidden="true"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: 80,
-          height: 80,
-          borderRadius: '50%',
-          background: '#455ce9',
-          pointerEvents: 'none',
-          zIndex: 99998,
-          transform: 'translate(-50%,-50%) scale(0)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: "'Sora', sans-serif",
-          fontSize: 12,
-          fontWeight: 500,
-          color: '#fff',
-          letterSpacing: '0.05em',
-          transition: 'transform 0.4s cubic-bezier(0.16,1,0.3,1)',
-        }}
-        className="ds-view-cursor"
-      >
-        View
-      </div>
-
-      <style>{`
-        .ds-view-cursor.is-visible { transform: translate(-50%,-50%) scale(1) !important; }
-        body.cursor-hover .ds-dot  { width: 44px !important; height: 44px !important; }
-      `}</style>
-    </>
-  );
-};
-
-/* ─────────────────────────────────────────────────────────────
-   SCROLL REVEAL HOOK
-───────────────────────────────────────────────────────────── */
-const useReveal = (ready) => {
+  // Sticky burger scroll listener
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 200) {
