@@ -71,11 +71,11 @@ export const Loader = () => {
       ctx.font = `800 ${fontSize} ${fontFamily}`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.fillStyle = 'rgba(229, 223, 211, 0.15)'; // Dimmed Khaki
       ctx.fillText('RONAK PREMJANI', width / 2, height / 2);
 
       // 2. Draw the liquid wave
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = '#E5DFD3'; // Bright Khaki
       ctx.beginPath();
       ctx.moveTo(0, height);
       
@@ -114,7 +114,7 @@ export const Loader = () => {
     <AnimatePresence>
       {isLoading && (
         <motion.div
-          className="fixed inset-0 z-[999] flex select-none items-center justify-center bg-[#151515] text-center text-white"
+          className="fixed inset-0 z-[999] flex select-none items-center justify-center bg-[#1A2A40] text-center text-[#E5DFD3]"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}

@@ -22,7 +22,7 @@ export const Hero = () => {
   return (
     <section 
       id="hero" 
-      className="relative w-full h-screen bg-[#D9D9D9] flex flex-col justify-between overflow-hidden pt-32 pb-0" 
+      className="relative w-full h-screen bg-[#E5DFD3] flex flex-col justify-between overflow-hidden pt-32 pb-0" 
       ref={containerRef}
     >
       {/* Massive Background Image Layer */}
@@ -35,7 +35,7 @@ export const Hero = () => {
         <motion.img 
           src="/ronak-portrait.png" 
           alt="" 
-          className="w-full h-full object-cover object-[center_20%] grayscale mix-blend-multiply blur-sm"
+          className="w-full h-full object-cover object-[center_20%] grayscale opacity-100"
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 3, ease: "easeOut" }}
@@ -46,7 +46,7 @@ export const Hero = () => {
         
         {/* Top right meta info, classic Dennis style */}
         <motion.div 
-          className="absolute top-0 right-4 md:right-8 flex gap-8 font-sans text-xs md:text-sm font-medium uppercase tracking-widest text-[#333333]"
+          className="absolute top-0 right-4 md:right-8 flex gap-8 font-sans text-xs md:text-sm font-medium uppercase tracking-widest text-[#8C2B3D]"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1 }}
@@ -62,7 +62,7 @@ export const Hero = () => {
         </motion.div>
 
         {/* Massive Split Typography */}
-        <div className="relative z-20 flex flex-col w-full text-[#111] font-heading font-semibold text-[15vw] md:text-[8rem] lg:text-[11rem] leading-[0.8] tracking-tighter uppercase mt-12 md:mt-0">
+        <div className="relative z-20 flex flex-col w-full text-[#1A2A40] font-heading font-semibold text-[15vw] md:text-[8rem] lg:text-[11rem] leading-[0.8] tracking-tighter uppercase mt-12 md:mt-0">
           <div className="overflow-hidden pb-4">
             <motion.div custom={1} initial="hidden" animate="visible" variants={textReveal} className="origin-bottom-left">
               Software
@@ -75,7 +75,7 @@ export const Hero = () => {
           </div>
           <div className="overflow-hidden pb-4 ml-0 md:ml-[5vw]">
             <motion.div custom={3} initial="hidden" animate="visible" variants={textReveal} className="origin-bottom-left flex items-center gap-4 md:gap-8">
-              <span className="text-[#555] font-light">&</span> Product
+              <span className="text-[#8C2B3D] font-light">&</span> Product
             </motion.div>
           </div>
           <div className="overflow-hidden pb-4 ml-0 md:ml-[20vw]">
@@ -96,21 +96,21 @@ export const Hero = () => {
         <img 
           src="/ronak-portrait.png" 
           alt="Ronak Premjani" 
-          className="w-full h-auto object-cover grayscale contrast-125 opacity-90 drop-shadow-2xl mix-blend-multiply" 
+          className="w-full h-auto object-cover opacity-90 drop-shadow-2xl" 
         />
       </motion.div>
       
       {/* Infinite Scrolling Bottom Banner */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden border-t border-black/10 py-4 md:py-6 z-30 bg-[#D9D9D9]">
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden border-t border-[#1A2A40]/10 py-4 md:py-6 z-30 bg-[#1A2A40]">
         <motion.div 
           className="flex whitespace-nowrap"
           animate={{ x: ["0%", "-50%"] }}
           transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
         >
-           <span className="text-[#111] font-sans text-sm md:text-xl font-medium uppercase tracking-widest px-4 md:px-8">
+           <span className="text-[#E5DFD3] font-sans text-sm md:text-xl font-medium uppercase tracking-widest px-4 md:px-8">
              - Freelance Software Engineer - Product Builder - Available for Work - Open to Relocate - Freelance Software Engineer - Product Builder - Available for Work - Open to Relocate - 
            </span>
-           <span className="text-[#111] font-sans text-sm md:text-xl font-medium uppercase tracking-widest px-4 md:px-8">
+           <span className="text-[#E5DFD3] font-sans text-sm md:text-xl font-medium uppercase tracking-widest px-4 md:px-8">
              - Freelance Software Engineer - Product Builder - Available for Work - Open to Relocate - Freelance Software Engineer - Product Builder - Available for Work - Open to Relocate - 
            </span>
         </motion.div>
