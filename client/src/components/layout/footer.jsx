@@ -1,5 +1,5 @@
 import React from 'react';
-import Container from '../ui/container';
+import { Container } from '../ui/Container';
 import { Text } from '../ui/typography';
 
 export const Footer = () => {
