@@ -1,15 +1,29 @@
-import React from 'react';
+import React, { createContext, useContext } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import Layout from '../components/layout/layout';
 import AppRoutes from '../routes/index';
+import { useLenis } from '../hooks/useLenis';
+import { Cursor } from '../components/ui/Cursor';
+import { ErrorBoundary } from '../components/ui/ErrorBoundary';
+
+export const LenisContext = createContext({ lenis: null, scrollTo: () => {} });
+
+export const useLenisContext = () => useContext(LenisContext);
 
 export const App = () => {
+  const { lenis, scrollTo } = useLenis();
+
   return (
-    <BrowserRouter>
-      <Layout>
-        <AppRoutes />
-      </Layout>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <LenisContext.Provider value={{ lenis, scrollTo }}>
+        <BrowserRouter>
+          <Cursor />
+          <Layout>
+            <AppRoutes />
+          </Layout>
+        </BrowserRouter>
+      </LenisContext.Provider>
+    </ErrorBoundary>
   );
 };
 

@@ -1,26 +1,17 @@
 import React from 'react';
-import { Heading } from './typography';
-import { cn } from '../../lib/utils';
+import { cn } from './Container';
 
-export const SectionTitle = ({
-  title,
-  subtitle,
-  className,
-  ...props
-}) => {
+export const SectionTitle = ({ title, subtitle, className }) => {
   return (
-    <div className={cn('mb-10', className)} {...props}>
+    <div className={cn("flex flex-col gap-xs mb-xl", className)}>
       {subtitle && (
-        <span className="text-xs font-bold tracking-widest text-brand-primary uppercase mb-2 block select-none">
+        <span className="font-mono text-xs tracking-[0.2em] text-brand-gray-dark uppercase">
           {subtitle}
         </span>
       )}
-      <Heading level={2} className="font-bold border-none pb-0">
+      <h2 className="reveal-text text-3xl md:text-4xl font-semibold tracking-tight text-brand-black">
         {title}
-      </Heading>
-      <div className="h-1 w-12 bg-brand-primary mt-3 rounded-full" />
+      </h2>
     </div>
   );
 };
-
-export default SectionTitle;
