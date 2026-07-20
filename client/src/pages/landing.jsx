@@ -28,10 +28,6 @@ export const Landing = () => {
           <Contact />
         </Suspense>
       </main>
-      
-      <Suspense fallback={<div className="w-full min-h-[10vh]" />}>
-        <Footer />
-      </Suspense>
     </div>
   );
 };

@@ -59,7 +59,7 @@ export const FeaturedWork = () => {
   useTextReveal(sectionRef, '.reveal-text');
 
   return (
-    <section id="work" ref={sectionRef} className="py-24 md:py-32 bg-[#1A2A40] text-[#E5DFD3] overflow-hidden border-b border-[#E5DFD3]/10 relative">
+    <section id="work" ref={sectionRef} className="py-24 md:py-32 bg-[#1A2A40] text-[#E5DFD3] overflow-hidden border-b border-[#E5DFD3]/10 relative z-10">
       {/* Background Radial Gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center opacity-20">
          <div className="w-[800px] h-[800px] border border-[#E5DFD3]/10 rounded-full absolute" />
