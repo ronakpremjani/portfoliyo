@@ -94,7 +94,7 @@ export const Contact = () => {
 
       {/* 3. THE FIXED STICKY FOOTER (z-0) 
           Native CSS sticky position. Zero jitter. Tucked safely behind FeaturedWork (z-10). */}
-      <footer ref={footerRef} className="fixed bottom-0 left-0 w-full h-screen z-0 bg-[#E5DFD3] text-[#1A2A40] pt-16 md:pt-20 pb-6 md:pb-8 invisible">
+      <footer ref={footerRef} className="fixed bottom-0 left-0 w-full h-screen z-0 bg-[#E5DFD3] text-[#1A2A40] pt-16 md:pt-20 pb-16 md:pb-20 invisible">
         <Container className="h-full">
             
             {/* Entire Content Parallax Wrapper */}

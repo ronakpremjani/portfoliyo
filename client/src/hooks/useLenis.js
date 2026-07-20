@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Lenis from 'lenis';
 import { syncScrollTriggerWithLenis, killAllScrollTriggers } from '../animations/gsap/scrollTrigger';
 
@@ -10,10 +10,10 @@ import { syncScrollTriggerWithLenis, killAllScrollTriggers } from '../animations
  * - Drives its RAF loop via requestAnimationFrame
  * - Destroys cleanly on unmount
  *
- * @returns {{ lenis: React.MutableRefObject<Lenis | null> }}
+ * @returns {{ lenis: Lenis | null, scrollTo: Function }}
  */
 export function useLenis() {
-  const lenisRef = useRef(null);
+  const [lenisInstance, setLenisInstance] = useState(null);
 
   useEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -29,28 +29,25 @@ export function useLenis() {
       touchMultiplier: 2,
     });
 
-    lenisRef.current = lenis;
+    setLenisInstance(lenis);
 
     // Sync ScrollTrigger with Lenis
     syncScrollTriggerWithLenis(lenis);
 
-    // RAF loop — Let GSAP ticker handle it (set up in syncScrollTriggerWithLenis)
-    // We do not need a duplicate RAF loop here.
-
     return () => {
       killAllScrollTriggers();
       lenis.destroy();
-      lenisRef.current = null;
+      setLenisInstance(null);
     };
   }, []);
 
   const scrollTo = (target) => {
-    if (lenisRef.current) {
-      lenisRef.current.scrollTo(target);
+    if (lenisInstance) {
+      lenisInstance.scrollTo(target);
     }
   };
 
-  return { lenis: lenisRef.current, scrollTo };
+  return { lenis: lenisInstance, scrollTo };
 }
 
 export default useLenis;

@@ -14,9 +14,9 @@ export default {
         'brand-gray-dark': '#737373',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        heading: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+        sans: ['Outfit', 'system-ui', 'sans-serif'],
+        heading: ['Syne', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       spacing: {
         'xs': '0.5rem',   // 8px
