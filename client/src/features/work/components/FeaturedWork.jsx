@@ -1,13 +1,8 @@
 import React, { useRef } from 'react';
-import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Container } from '../../../components/ui/Container';
-import { SectionTitle } from '../../../components/ui/SectionTitle';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../../../components/ui/Card';
-import { Badge } from '../../../components/ui/Badge';
-import { Button } from '../../../components/ui/Button';
-import { useReveal } from '../../../hooks/useReveal';
 import { useTextReveal } from '../../../hooks/useTextReveal';
-import { trackProjectClick } from '../../../utils/analytics';
+import { WorkCarousel } from './WorkCarousel';
 
 const projects = [
   {
@@ -33,108 +28,85 @@ const projects = [
     lessons: "Deepened my understanding of browser memory management, garbage collection pausing, and WebGL context limitations.",
     demoLink: "#",
     sourceLink: "#"
+  },
+  {
+    title: "E-Commerce Checkout Flow",
+    overview: "A seamless, high-conversion checkout experience for a modern lifestyle brand.",
+    techStack: ["Next.js", "Tailwind", "Stripe", "Framer Motion"],
+    demoLink: "#",
+    sourceLink: "#"
+  },
+  {
+    title: "Web3 NFT Marketplace",
+    overview: "A decentralized application for minting and trading digital assets on the Ethereum blockchain.",
+    techStack: ["Solidity", "Ethers.js", "React", "Hardhat"],
+    demoLink: "#",
+    sourceLink: "#"
+  },
+  {
+    title: "AI Image Generator",
+    overview: "Generate stunning images from text prompts using Stable Diffusion.",
+    techStack: ["Python", "PyTorch", "React", "FastAPI"],
+    demoLink: "#",
+    sourceLink: "#"
   }
 ];
 
 export const FeaturedWork = () => {
   const sectionRef = useRef(null);
 
-  // Apply scroll reveal for cards
-  useReveal(sectionRef, '.reveal-card', { type: 'clip', stagger: 0.2 }, true);
-  
   // Apply text reveal for heading
   useTextReveal(sectionRef, '.reveal-text');
 
   return (
-    <section id="work" ref={sectionRef} className="py-24 md:py-32 bg-brand-white border-b border-brand-gray">
-      <Container>
-        <SectionTitle 
-          title="Featured Work" 
-          subtitle="// 02. Selected Projects" 
-        />
+    <section id="work" ref={sectionRef} className="py-24 md:py-32 bg-[#1A2A40] text-[#E5DFD3] overflow-hidden border-b border-[#E5DFD3]/10 relative">
+      {/* Background Radial Gradients */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center opacity-20">
+         <div className="w-[800px] h-[800px] border border-[#E5DFD3]/10 rounded-full absolute" />
+         <div className="w-[1200px] h-[1200px] border border-[#E5DFD3]/5 rounded-full absolute" />
+      </div>
+
+      <Container className="relative z-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+          <div className="flex flex-col gap-2">
+            <span className="font-mono text-xs tracking-[0.2em] text-[#8C2B3D] uppercase">
+              // 02. Selected Projects
+            </span>
+            <h2 className="reveal-text text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#E5DFD3] leading-tight">
+              Made with <br/> Passion
+            </h2>
+          </div>
+          
+          <div className="hidden md:block">
+            <p className="font-serif italic text-xl text-[#E5DFD3]/70 max-w-[200px] text-right">
+              These folks are talented *
+            </p>
+          </div>
+        </div>
         
-        <div className="grid grid-cols-1 gap-16 mt-16">
-          {projects.map((project, idx) => (
-            <motion.div 
-              key={idx}
-              data-cursor="image"
-              className="reveal-card w-full"
-              whileHover="hover"
-              initial="initial"
+        <div className="mt-8 mb-16 md:mb-24">
+          <WorkCarousel projects={projects.slice(0, 3)} />
+        </div>
+        
+        <div className="flex justify-center w-full relative z-20">
+          <Link 
+            to="/work" 
+            className="group relative inline-flex items-center justify-center px-8 py-3 font-semibold bg-white text-[#1A2A40] transition-all duration-200 rounded-full hover:bg-[#8C2B3D] hover:text-white"
+          >
+            <span>View All Projects</span>
+            <svg 
+              className="w-5 h-5 ml-2 -mr-1 transition-transform duration-200 group-hover:translate-x-1" 
+              fill="currentColor" 
+              viewBox="0 0 20 20" 
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <Card className="flex flex-col border-brand-gray transition-colors duration-300 relative overflow-hidden group">
-                <motion.div 
-                  className="absolute inset-0 border-2 border-brand-black opacity-0 rounded-lg pointer-events-none z-10"
-                  variants={{
-                    initial: { opacity: 0 },
-                    hover: { opacity: 1, transition: { duration: 0.3 } }
-                  }}
-                />
-                
-                <div className="flex flex-col lg:flex-row">
-                  <div className="w-full lg:w-1/3 flex flex-col border-b lg:border-b-0 lg:border-r border-brand-gray bg-brand-gray-light/10">
-                    <CardHeader className="pt-8 px-8 pb-6">
-                      <CardTitle className="text-2xl">{project.title}</CardTitle>
-                      <CardDescription className="mt-4 text-brand-gray-dark leading-relaxed text-base">
-                        {project.overview}
-                      </CardDescription>
-                    </CardHeader>
-                    
-                    <CardContent className="px-8 pb-8 flex-grow">
-                      <h4 className="text-xs font-semibold text-brand-black uppercase tracking-widest mb-3">Tech Stack</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {project.techStack.map(tag => (
-                          <motion.span 
-                            key={tag}
-                            variants={{
-                              initial: { y: 0 },
-                              hover: { y: -2, transition: { type: 'spring', stiffness: 400 } }
-                            }}
-                          >
-                            <Badge variant="secondary">{tag}</Badge>
-                          </motion.span>
-                        ))}
-                      </div>
-                    </CardContent>
-                    
-                    <CardFooter className="px-8 pb-8 flex gap-4">
-                      <Button variant="primary" asChild>
-                        <a href={project.demoLink} target="_blank" rel="noopener noreferrer" aria-label={`Live Demo for ${project.title}`} onClick={() => trackProjectClick(project.title, 'Live Demo')}>Live Demo</a>
-                      </Button>
-                      <Button variant="outline" asChild>
-                        <a href={project.sourceLink} target="_blank" rel="noopener noreferrer" aria-label={`Source Code for ${project.title}`} onClick={() => trackProjectClick(project.title, 'Source Code')}>Source Code</a>
-                      </Button>
-                    </CardFooter>
-                  </div>
-                  
-                  <div className="w-full lg:w-2/3 p-8 lg:p-12 flex flex-col gap-8">
-                    <div>
-                      <h4 className="text-xs font-semibold text-brand-black uppercase tracking-widest mb-3">The Challenge</h4>
-                      <p className="text-brand-gray-dark leading-relaxed">{project.challenge}</p>
-                    </div>
-                    
-                    <div>
-                      <h4 className="text-xs font-semibold text-brand-black uppercase tracking-widest mb-3">The Solution</h4>
-                      <p className="text-brand-gray-dark leading-relaxed">{project.solution}</p>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div>
-                        <h4 className="text-xs font-semibold text-brand-black uppercase tracking-widest mb-3">Key Results</h4>
-                        <p className="text-brand-gray-dark leading-relaxed">{project.results}</p>
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-semibold text-brand-black uppercase tracking-widest mb-3">Lessons Learned</h4>
-                        <p className="text-brand-gray-dark leading-relaxed">{project.lessons}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-          ))}
+              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </Link>
         </div>
       </Container>
     </section>
   );
 };
+
+

@@ -19,7 +19,7 @@ export const Navigation = memo(() => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex items-start justify-between mix-blend-difference text-white pointer-events-none">
+      <header className="fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex items-start justify-between text-white mix-blend-difference pointer-events-none">
         
         {/* Left Side: Copyright Logo — Dennis Snellenberg horizontal slide */}
         <div 

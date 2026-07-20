@@ -1,7 +1,5 @@
 import React, { useRef } from 'react';
 import { Container } from '../../../components/ui/Container';
-import { SectionTitle } from '../../../components/ui/SectionTitle';
-import { Badge } from '../../../components/ui/Badge';
 import { useReveal } from '../../../hooks/useReveal';
 import { useTextReveal } from '../../../hooks/useTextReveal';
 
@@ -51,33 +49,45 @@ export const Experience = () => {
   useTextReveal(sectionRef, '.reveal-text');
 
   return (
-    <section id="experience" ref={sectionRef} className="py-24 md:py-32 bg-brand-gray-light border-b border-brand-gray">
-      <Container>
-        <SectionTitle 
-          title="Experience" 
-          subtitle="// 05. Career" 
-        />
+    <section id="experience" ref={sectionRef} className="py-24 md:py-32 bg-[#E5DFD3] text-[#1A2A40] overflow-hidden border-b border-[#1A2A40]/10 relative">
+      <Container className="relative z-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+          <div className="flex flex-col gap-2">
+            <span className="font-mono text-xs tracking-[0.2em] text-[#8C2B3D] uppercase">
+              // 02. Skills & Experience
+            </span>
+            <h2 className="reveal-text text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#1A2A40] leading-tight">
+              My <br/> Career
+            </h2>
+          </div>
+          
+          <div className="hidden md:block">
+            <p className="font-serif italic text-xl text-[#1A2A40]/70 max-w-[200px] text-right reveal-text">
+              Building impactful products *
+            </p>
+          </div>
+        </div>
         
-        <div className="flex flex-col gap-12 mt-12">
+        <div className="flex flex-col gap-12 mt-16 md:mt-24 relative z-20">
           {experiences.map((exp, idx) => (
-            <div key={idx} className="reveal-exp grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 border-t border-brand-gray pt-8 first:border-t-0 first:pt-0">
+            <div key={idx} className="reveal-exp grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 border-t border-[#1A2A40]/10 pt-8 first:border-t-0 first:pt-0">
               <div className="md:col-span-4 lg:col-span-3">
-                <span className="font-mono text-sm text-brand-gray-dark font-medium">
+                <span className="font-mono text-sm text-[#8C2B3D] font-medium tracking-wide">
                   {exp.period}
                 </span>
               </div>
-              <div className="md:col-span-8 lg:col-span-9 flex flex-col gap-4">
+              <div className="md:col-span-8 lg:col-span-9 flex flex-col gap-5">
                 <div>
-                  <h3 className="text-xl font-semibold text-brand-black">{exp.role}</h3>
-                  <span className="text-brand-gray-dark font-medium">{exp.company}</span>
+                  <h3 className="text-2xl md:text-3xl font-semibold text-[#1A2A40] tracking-tight">{exp.role}</h3>
+                  <span className="text-[#1A2A40]/60 font-medium text-lg">{exp.company}</span>
                 </div>
                 
-                <p className="text-brand-gray-dark leading-relaxed text-sm max-w-2xl">
+                <p className="text-[#1A2A40]/80 leading-relaxed font-light text-base md:text-lg max-w-3xl">
                   {exp.description}
                 </p>
                 
                 {exp.achievements && exp.achievements.length > 0 && (
-                  <ul className="list-disc list-inside text-sm text-brand-gray-dark space-y-1 max-w-2xl">
+                  <ul className="list-disc list-inside text-base md:text-lg text-[#1A2A40]/80 font-light space-y-2 max-w-3xl marker:text-[#8C2B3D]">
                     {exp.achievements.map((achievement, i) => (
                       <li key={i}>{achievement}</li>
                     ))}
@@ -85,9 +95,11 @@ export const Experience = () => {
                 )}
                 
                 {exp.technologies && exp.technologies.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
+                  <div className="flex flex-wrap gap-2 mt-4">
                     {exp.technologies.map(tech => (
-                      <Badge key={tech} variant="secondary">{tech}</Badge>
+                      <span key={tech} className="px-4 py-1.5 rounded-full border border-[#1A2A40]/20 text-xs md:text-sm font-medium tracking-wide text-[#1A2A40]/80 hover:bg-[#1A2A40] hover:text-[#E5DFD3] transition-colors duration-300 cursor-default">
+                        {tech}
+                      </span>
                     ))}
                   </div>
                 )}
