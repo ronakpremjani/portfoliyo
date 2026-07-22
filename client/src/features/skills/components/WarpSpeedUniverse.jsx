@@ -7,7 +7,7 @@ const clusters = [
   {
     id: "frontend",
     title: "FRONTEND",
-    zOffset: 0.1, // 10% down the scroll flight
+    zOffset: 0.15, // 10% down the scroll flight
     skills: [
       { name: "React", icon: "react" },
       { name: "Next.js", icon: "nextdotjs" },
@@ -20,7 +20,7 @@ const clusters = [
   {
     id: "backend",
     title: "BACKEND",
-    zOffset: 0.35, // 35% down
+    zOffset: 0.40, // 35% down
     skills: [
       { name: "Node.js", icon: "nodedotjs" },
       { name: "Express", icon: "express" },
@@ -32,7 +32,7 @@ const clusters = [
   {
     id: "database",
     title: "DATABASE",
-    zOffset: 0.60, // 60% down
+    zOffset: 0.65, // 60% down
     skills: [
       { name: "MongoDB", icon: "mongodb" },
       { name: "PostgreSQL", icon: "postgresql" },
@@ -42,7 +42,7 @@ const clusters = [
   {
     id: "devops",
     title: "DEVOPS",
-    zOffset: 0.85, // 85% down
+    zOffset: 0.90, // 85% down
     skills: [
       { name: "Docker", icon: "docker" },
       { name: "AWS", icon: "amazonwebservices" },
@@ -53,8 +53,8 @@ const clusters = [
   }
 ];
 
-const FLIGHT_LENGTH = 400; // Total Z depth of the flight
-const SPREAD = 15; 
+const FLIGHT_LENGTH = 500; // Total Z depth of the flight
+const SPREAD = 10; 
 
 export const WarpSpeedUniverse = ({ scrollProgress }) => {
   const cameraGroup = useRef();
@@ -137,7 +137,7 @@ export const WarpSpeedUniverse = ({ scrollProgress }) => {
            distanceFactor={20}
            zIndexRange={[50, 0]}
          >
-            <h3 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-[#E5DFD3]/20 to-[#1A2A40]/10 tracking-[0.5em] uppercase pointer-events-none whitespace-nowrap">
+            <h3 className="text-6xl md:text-8xl font-black text-[#1A2A40]/5 bg-clip-text bg-gradient-to-b from-[#E5DFD3]/30 to-[#1A2A40]/20 tracking-[0.5em] uppercase pointer-events-none whitespace-nowrap">
               {cluster.title}
             </h3>
          </Html>
