@@ -78,16 +78,16 @@ export const Experience = () => {
               </div>
               <div className="md:col-span-8 lg:col-span-9 flex flex-col gap-5">
                 <div>
-                  <h3 className="text-2xl md:text-3xl font-semibold text-[#1A2A40] tracking-tight">{exp.role}</h3>
-                  <span className="text-[#1A2A40]/60 font-medium text-lg">{exp.company}</span>
+                  <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1A2A40] tracking-tight">{exp.role}</h3>
+                  <span className="text-[#1A2A40]/60 font-medium text-xl md:text-2xl mt-1 block">{exp.company}</span>
                 </div>
                 
-                <p className="text-[#1A2A40]/80 leading-relaxed font-light text-base md:text-lg max-w-3xl">
+                <p className="text-[#1A2A40]/90 leading-relaxed font-normal text-lg md:text-xl lg:text-2xl max-w-4xl">
                   {exp.description}
                 </p>
                 
                 {exp.achievements && exp.achievements.length > 0 && (
-                  <ul className="list-disc list-inside text-base md:text-lg text-[#1A2A40]/80 font-light space-y-2 max-w-3xl marker:text-[#8C2B3D]">
+                  <ul className="list-disc list-inside text-lg md:text-xl lg:text-2xl text-[#1A2A40]/80 font-normal space-y-3 max-w-4xl marker:text-[#8C2B3D]">
                     {exp.achievements.map((achievement, i) => (
                       <li key={i}>{achievement}</li>
                     ))}

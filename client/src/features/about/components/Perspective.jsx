@@ -40,15 +40,15 @@ export const Perspective = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mt-16 md:mt-24">
           <div className="lg:col-span-7 flex flex-col gap-8 relative z-20">
-            <p className="reveal-text text-xl md:text-2xl text-[#E5DFD3] font-light leading-relaxed">
+            <p className="reveal-text text-2xl md:text-3xl lg:text-4xl text-[#E5DFD3] font-medium leading-tight">
               My journey into software engineering started with an insatiable curiosity about how things work under the hood. I dismantle complex problems to build simple, resilient solutions.
             </p>
             
-            <p className="reveal-text text-base md:text-lg text-[#E5DFD3]/70 leading-relaxed font-light">
+            <p className="reveal-text text-lg md:text-xl lg:text-2xl text-[#E5DFD3]/80 leading-relaxed font-normal">
               Early in my career, I focused heavily on building pixel-perfect interfaces. However, I quickly realized that a beautiful UI is only as good as the system powering it. This realization drove me to dive deep into backend architecture, database optimization, and scalable infrastructure.
             </p>
             
-            <p className="reveal-text text-base md:text-lg text-[#E5DFD3]/70 leading-relaxed font-light">
+            <p className="reveal-text text-lg md:text-xl lg:text-2xl text-[#E5DFD3]/80 leading-relaxed font-normal">
               Today, I thrive at the intersection of design and engineering. I enjoy taking an idea from raw concept through robust backend implementation all the way to a polished, highly-interactive frontend experience. Continuous learning is my default state—whether exploring a new Rust framework or refining micro-animations.
             </p>
           </div>

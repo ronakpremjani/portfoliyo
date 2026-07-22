@@ -32,7 +32,7 @@ export const Hero = () => {
         animate={{ opacity: 0.15 }}
         transition={{ duration: 2, delay: 0.5 }}
       >
-        <motion.img 
+        <motion.img  
           src="/ronak-portrait.png" 
           alt="" 
           className="w-full h-full object-cover object-[center_20%] grayscale opacity-100"
@@ -62,23 +62,23 @@ export const Hero = () => {
         </motion.div>
 
         {/* Massive Split Typography */}
-        <div className="relative z-20 flex flex-col w-full text-[#1A2A40] font-heading font-semibold text-[15vw] md:text-[8rem] lg:text-[11rem] leading-[0.8] tracking-tighter uppercase mt-12 md:mt-0">
-          <div className="overflow-hidden pb-4">
+        <div className="relative z-20 flex flex-col w-full text-[#1A2A40] font-sans font-bold text-[15vw] md:text-[9rem] lg:text-[12rem] leading-[0.85] tracking-tighter mt-12 md:mt-0 md:-ml-8 lg:-ml-12">
+          <div className="overflow-hidden pb-6 ml-0">
             <motion.div custom={1} initial="hidden" animate="visible" variants={textReveal} className="origin-bottom-left">
               Software
             </motion.div>
           </div>
-          <div className="overflow-hidden pb-4 ml-0 md:ml-[10vw]">
+          <div className="overflow-hidden pb-6 ml-0 md:ml-[3vw] lg:ml-[4vw]">
             <motion.div custom={2} initial="hidden" animate="visible" variants={textReveal} className="origin-bottom-left">
               Engineer
             </motion.div>
           </div>
-          <div className="overflow-hidden pb-4 ml-0 md:ml-[5vw]">
+          <div className="overflow-hidden pb-6 ml-0 md:ml-[6vw] lg:ml-[8vw]">
             <motion.div custom={3} initial="hidden" animate="visible" variants={textReveal} className="origin-bottom-left flex items-center gap-4 md:gap-8">
               <span className="text-[#8C2B3D] font-light">&</span> Product
             </motion.div>
           </div>
-          <div className="overflow-hidden pb-4 ml-0 md:ml-[20vw]">
+          <div className="overflow-hidden pb-6 ml-0 md:ml-[11vw] lg:ml-[17.5vw]">
             <motion.div custom={4} initial="hidden" animate="visible" variants={textReveal} className="origin-bottom-left">
               Builder
             </motion.div>

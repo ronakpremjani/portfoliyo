@@ -101,7 +101,7 @@ export const Contact = () => {
             <div ref={parallaxRef} className="flex flex-col justify-between h-full w-full">
               
               {/* Top Massive Typography */}
-              <div className="flex flex-col mt-4">
+              <div className="flex flex-col mt-auto pb-8 md:pb-12">
                 <div className="flex items-center gap-4 md:gap-8 mb-2">
                   <img 
                     src="https://api.dicebear.com/7.x/notionists/svg?seed=Ronak&backgroundColor=8C2B3D" 
@@ -124,7 +124,7 @@ export const Contact = () => {
               </div>
 
               {/* Separator Line and Magnetic Button */}
-              <div className="relative w-full mb-10 md:mb-12 mt-auto">
+              <div className="relative w-full mb-10 md:mb-12">
                 <div className="w-full h-px bg-[#1A2A40]/20 absolute top-1/2 -translate-y-1/2" />
                 <div className="flex justify-end relative z-10 md:pr-24 lg:pr-32">
                   <MagneticButton className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-[#1A2A40] text-[#E5DFD3] flex items-center justify-center group overflow-hidden border-none cursor-pointer">

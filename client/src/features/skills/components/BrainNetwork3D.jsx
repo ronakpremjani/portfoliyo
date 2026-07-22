@@ -15,7 +15,7 @@ const allSkills = [
   { name: "MongoDB", icon: "mongodb" },
   { name: "Redis", icon: "redis" },
   { name: "Docker", icon: "docker" },
-  { name: "AWS", icon: "amazonaws" },
+  { name: "AWS", icon: "amazonwebservices" },
   { name: "Framer", icon: "framer" },
   { name: "Three.js", icon: "threedotjs" },
   { name: "Go", icon: "go" },

@@ -16,7 +16,7 @@ export const App = () => {
   return (
     <ErrorBoundary>
       <LenisContext.Provider value={{ lenis, scrollTo }}>
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Cursor />
           <Layout>
             <AppRoutes />

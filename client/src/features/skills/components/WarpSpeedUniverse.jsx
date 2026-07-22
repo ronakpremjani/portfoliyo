@@ -45,7 +45,7 @@ const clusters = [
     zOffset: 0.85, // 85% down
     skills: [
       { name: "Docker", icon: "docker" },
-      { name: "AWS", icon: "amazonaws" },
+      { name: "AWS", icon: "amazonwebservices" },
       { name: "Vercel", icon: "vercel" },
       { name: "Git", icon: "git" },
       { name: "Kubernetes", icon: "kubernetes" },
