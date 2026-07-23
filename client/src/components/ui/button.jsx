@@ -1,6 +1,6 @@
 import React, { useRef, useImperativeHandle } from 'react';
 import { motion } from 'framer-motion';
-import { cn } from './Container';
+import { cn } from './container';
 import { useMagnetic } from '../../hooks/useMagnetic';
 
 export const Button = React.forwardRef(({ className, variant = 'primary', size = 'default', asChild = false, ...props }, ref) => {

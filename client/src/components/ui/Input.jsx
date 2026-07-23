@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from './Container';
+import { cn } from './container';
 
 export const Input = React.forwardRef(({ className, type, ...props }, ref) => {
   return (

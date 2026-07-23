@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Container } from '../../../components/ui/Container';
+import { Container } from '../../../components/ui/container';
 import { useTextReveal } from '../../../hooks/useTextReveal';
 import { WorkCarousel } from './WorkCarousel';
 

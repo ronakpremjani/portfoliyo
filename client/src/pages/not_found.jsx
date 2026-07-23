@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Container } from '../components/ui/Container';
+import { Container } from '../components/ui/container';
 import { Button } from '../components/ui/Button';
 
 export const NotFound = () => {
