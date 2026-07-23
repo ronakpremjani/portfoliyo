@@ -8,7 +8,7 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export const Contact = () => {
+export const Contact = ({ standalone = false, curveColor = '#1A2A40' }) => {
   const [time, setTime] = useState('');
   const spacerRef = useRef(null);
   const curveRef = useRef(null);
@@ -16,6 +16,8 @@ export const Contact = () => {
   const parallaxRef = useRef(null);
 
   useGSAP(() => {
+    if (standalone) return; // Skip complex scroll animations in standalone mode
+
     // 0. Toggle visibility to prevent the fixed footer from bleeding behind other transparent sections
     gsap.set(footerRef.current, { autoAlpha: 0 });
     
@@ -71,30 +73,40 @@ export const Contact = () => {
   return (
     <section id="contact" className="relative w-full">
       
-      {/* 1. THE CURVE (z-20) 
-          Sits exactly below FeaturedWork. Extends 25vh down and shrinks to 0 on scroll. */}
-      <div className="relative w-full z-20 pointer-events-none flex justify-center">
-         <div ref={curveRef} className="absolute top-0 w-full overflow-hidden pointer-events-none">
-            <div 
-              className="absolute top-0 bg-[#1A2A40]" 
-              style={{ 
-                left: '-25%', 
-                width: '150%', 
-                height: '100%', 
-                borderBottomLeftRadius: '50% 100%', 
-                borderBottomRightRadius: '50% 100%' 
-              }} 
-            />
-         </div>
-      </div>
+      {!standalone && (
+        <>
+          {/* 1. THE CURVE (z-20) 
+              Sits exactly below FeaturedWork. Extends 25vh down and shrinks to 0 on scroll. */}
+          <div className="relative w-full z-20 pointer-events-none flex justify-center">
+             <div ref={curveRef} className="absolute top-0 w-full overflow-hidden pointer-events-none">
+                <div 
+                  className="absolute top-0" 
+                  style={{ 
+                    backgroundColor: curveColor,
+                    left: '-25%', 
+                    width: '150%', 
+                    height: '100%', 
+                    borderBottomLeftRadius: '50% 100%', 
+                    borderBottomRightRadius: '50% 100%' 
+                  }} 
+                />
+             </div>
+          </div>
 
-      {/* 2. THE TRANSPARENT SPACER (z-10) 
-          Allows the document to scroll exactly 100vh past FeaturedWork, peeling it up like a curtain. */}
-      <div ref={spacerRef} className="w-full h-screen relative z-10 pointer-events-none" />
+          {/* 2. THE TRANSPARENT SPACER (z-10) 
+              Allows the document to scroll exactly 100vh past FeaturedWork, peeling it up like a curtain. */}
+          <div ref={spacerRef} className="w-full h-screen relative z-10 pointer-events-none" />
+        </>
+      )}
 
-      {/* 3. THE FIXED STICKY FOOTER (z-0) 
-          Native CSS sticky position. Zero jitter. Tucked safely behind FeaturedWork (z-10). */}
-      <footer ref={footerRef} className="fixed bottom-0 left-0 w-full h-screen z-0 bg-[#E5DFD3] text-[#1A2A40] pt-16 md:pt-20 pb-16 md:pb-20 invisible">
+      {/* 3. THE FOOTER 
+          In standalone mode, it's just a normal relative block. Otherwise it's fixed and revealed by the spacer. */}
+      <footer 
+        ref={footerRef} 
+        className={standalone 
+          ? "relative w-full min-h-screen z-0 bg-[#E5DFD3] text-[#1A2A40] pt-16 md:pt-20 pb-16 md:pb-20 flex flex-col justify-end" 
+          : "fixed bottom-0 left-0 w-full h-screen z-0 bg-[#E5DFD3] text-[#1A2A40] pt-16 md:pt-20 pb-16 md:pb-20 invisible"}
+      >
         <Container className="h-full">
             
             {/* Entire Content Parallax Wrapper */}

@@ -68,15 +68,14 @@ export const WorkCarousel = ({ projects }) => {
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
           >
-            {/* Card Background (Placeholder Image) */}
-            <div className="absolute inset-0 bg-[#E5DFD3] rounded-2xl overflow-hidden border border-[#1A2A40]/10">
-                {/* Fallback pattern if no image */}
-                <div className="w-full h-full opacity-5 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1A2A40] to-transparent" />
-                
-                {/* Simulated media content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center opacity-30 text-[#1A2A40] pointer-events-none">
-                  <span className="text-2xl md:text-4xl font-serif italic mb-4">{project.title.split(' ')[0]}</span>
-                </div>
+            {/* Card Background (Image) */}
+            <div className="absolute inset-0 bg-[#1A2A40] rounded-2xl overflow-hidden border border-[#1A2A40]/10">
+                <div className="absolute inset-0 opacity-40 bg-[#1A2A40] mix-blend-color z-10" />
+                <img 
+                  src={project.image} 
+                  alt={project.title} 
+                  className="w-full h-full object-cover object-center opacity-80"
+                />
             </div>
 
             {/* Content Container (Neon Bottom Bar) */}

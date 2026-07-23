@@ -1,66 +1,25 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
 import { Contact } from '../features/contact/components/Contact';
+import { BackButton } from '../components/ui/BackButton';
 
 // Mock data (in a real app, this would be fetched from a CMS or API)
 const allProjects = [
   {
-    title: "Portfolio CMS Architecture",
-    overview: "A highly optimized headless CMS built from the ground up to serve developer portfolios with zero latency.",
-    techStack: ["Node.js", "GraphQL", "MongoDB", "Redis", "React"],
-    demoLink: "#",
-    sourceLink: "#"
+    title: "Employee Shop Management",
+    overview: "A comprehensive management system for employees and shop inventory, built to streamline business operations.",
+    techStack: ["React", "Node.js", "MongoDB", "Tailwind"],
+    image: "https://opengraph.githubassets.com/1/ronakpremjani/employee-shop-management",
+    demoLink: "https://luckystoreem.vercel.app",
+    sourceLink: "https://github.com/ronakpremjani/employee-shop-management"
   },
   {
-    title: "Enterprise Analytics Dashboard",
-    overview: "A high-performance financial analytics dashboard processing and visualizing massive datasets in real-time.",
-    techStack: ["TypeScript", "WebGL", "React", "PostgreSQL", "Go"],
-    demoLink: "#",
-    sourceLink: "#"
-  },
-  {
-    title: "E-Commerce Checkout Flow",
-    overview: "A seamless, high-conversion checkout experience for a modern lifestyle brand.",
-    techStack: ["Next.js", "Tailwind", "Stripe", "Framer Motion"],
-    demoLink: "#",
-    sourceLink: "#"
-  },
-  {
-    title: "Web3 NFT Marketplace",
-    overview: "A decentralized application for minting and trading digital assets on the Ethereum blockchain.",
-    techStack: ["Solidity", "Ethers.js", "React", "Hardhat"],
-    demoLink: "#",
-    sourceLink: "#"
-  },
-  {
-    title: "AI Image Generator",
-    overview: "Generate stunning images from text prompts using Stable Diffusion and a custom React frontend.",
-    techStack: ["Python", "PyTorch", "React", "FastAPI"],
-    demoLink: "#",
-    sourceLink: "#"
-  },
-  {
-    title: "Real-time Collaboration Tool",
-    overview: "A workspace for remote teams featuring real-time document editing and video conferencing.",
-    techStack: ["WebRTC", "Socket.io", "React", "Node.js"],
-    demoLink: "#",
-    sourceLink: "#"
-  },
-  {
-    title: "Fintech Mobile App",
-    overview: "A cross-platform mobile application for personal finance management and budget tracking.",
-    techStack: ["React Native", "Expo", "Redux", "Firebase"],
-    demoLink: "#",
-    sourceLink: "#"
-  },
-  {
-    title: "Open Source UI Library",
-    overview: "A collection of accessible, highly customizable UI components built for modern web applications.",
-    techStack: ["React", "Storybook", "Tailwind", "Jest"],
-    demoLink: "#",
-    sourceLink: "#"
+    title: "GitHub Profile & Portfolio",
+    overview: "My personal GitHub repository containing my profile readme and portfolio configurations.",
+    techStack: ["Markdown", "GitHub Actions", "React"],
+    image: "https://opengraph.githubassets.com/1/ronakpremjani/ronakpremjani",
+    demoLink: "https://github.com/ronakpremjani/ronakpremjani",
+    sourceLink: "https://github.com/ronakpremjani/ronakpremjani"
   }
 ];
 
@@ -72,6 +31,7 @@ export const Work = () => {
 
   return (
     <div className="min-h-screen text-[#E5DFD3] selection:bg-[#8C2B3D] selection:text-[#E5DFD3] font-sans bg-[#E5DFD3]">
+      <BackButton />
       
       {/* SOLID WRAPPER (z-10) 
           This wrapper has a solid background and sits above the fixed Contact footer. 
@@ -86,11 +46,6 @@ export const Work = () => {
         <main className="relative z-10 px-6 py-24 md:px-12 lg:px-24 max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-20">
-            <Link to="/" className="inline-flex items-center text-[#E5DFD3]/60 hover:text-[#8C2B3D] transition-colors mb-8 font-sans text-sm group tracking-wider uppercase font-medium">
-              <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" strokeWidth={2} />
-              Back to Home
-            </Link>
-            
             <h1 className="text-5xl md:text-7xl lg:text-[7.5rem] font-heading font-medium tracking-tight mb-6 leading-none">
               All <span className="text-[#8C2B3D]">Projects</span>
             </h1>
@@ -109,12 +64,14 @@ export const Work = () => {
                 transition={{ delay: index * 0.1, duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
                 className="group bg-[#1A2A40] border border-[#E5DFD3]/10 rounded-2xl overflow-hidden hover:border-[#8C2B3D]/50 hover:shadow-[0_0_30px_rgba(140,43,61,0.15)] transition-all duration-500 flex flex-col cursor-pointer"
               >
-                {/* Media Placeholder */}
+                {/* Media Image */}
                 <div className="w-full h-56 bg-[#111] relative overflow-hidden">
-                  <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#E5DFD3] to-transparent group-hover:opacity-40 transition-opacity duration-500" />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-40 group-hover:scale-110 transition-transform duration-700 ease-out">
-                    <span className="font-heading text-4xl tracking-tighter">{project.title.split(' ')[0]}</span>
-                  </div>
+                  <div className="absolute inset-0 opacity-40 bg-[#1A2A40] mix-blend-color z-10 group-hover:opacity-0 transition-opacity duration-500" />
+                  <img 
+                    src={project.image} 
+                    alt={project.title} 
+                    className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  />
                 </div>
                 
                 {/* Content */}

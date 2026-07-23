@@ -1,189 +1,214 @@
 import React, { useRef, useMemo, useState } from 'react';
-import { useScroll, useSpring } from 'framer-motion';
+import { useScroll, useSpring, motion, useTransform } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { PerspectiveCamera, Html, Line } from '@react-three/drei';
+import { Line, PerspectiveCamera } from '@react-three/drei';
+import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
-import { Link } from 'react-router-dom';
+import { BackButton } from '../components/ui/BackButton';
 import { Contact } from '../features/contact/components/Contact';
 
-// Localized 3D cluster constellation
+// --- Content ---
 const chapters = [
   {
-    id: 1, label: 'Chapter 01', title: 'The Spark.',
+    id: 1, label: 'Chapter 01', title: 'The Spark',
     text: "It didn't start with code. It started with a question: How do things work behind the glass? My curiosity about technology turned into an obsession. I wasn't just consuming the web anymore—I wanted to build it.",
-    x: -50, y: 40, z: 30, dirX: -1, dirY: 1, progress: 0.05
+    geometry: 'Icosahedron', color: '#3b82f6', zPos: -10, xPos: 5
   },
   {
-    id: 2, label: 'Chapter 02', title: 'Learning to Build.',
+    id: 2, label: 'Chapter 02', title: 'Building the Foundation',
     text: "The excitement of seeing a blank screen turn into something interactive was intoxicating. Every broken layout was a puzzle. Every late night spent wrestling with logic was a lesson in patience and precision.",
-    x: 40, y: 20, z: 10, dirX: 1, dirY: 1, progress: 0.22
+    geometry: 'Box', color: '#8b5cf6', zPos: -30, xPos: -5
   },
   {
-    id: 3, label: 'Chapter 03', title: 'Discovering Full-Stack.',
+    id: 3, label: 'Chapter 03', title: 'Discovering Architecture',
     text: "Beautiful interfaces weren't enough. I wanted to understand the systems that powered them. I dove deep into databases and servers, realizing that true engineering happens when the architecture is as elegant as the design.",
-    x: 60, y: -15, z: -30, dirX: 1, dirY: -1, progress: 0.39
+    geometry: 'Torus', color: '#ec4899', zPos: -50, xPos: 5
   },
   {
-    id: 4, label: 'Chapter 04', title: 'Challenges & Growth.',
+    id: 4, label: 'Chapter 04', title: 'The Resistance',
     text: "Growth didn't come from success—it came from broken deployments, failed ideas, and deep architectural flaws. I learned to love the friction. It forced me to think systematically, proving that persistence is a developer's greatest asset.",
-    x: 0, y: -40, z: -50, dirX: -1, dirY: -1, progress: 0.56
+    geometry: 'Octahedron', color: '#ef4444', zPos: -70, xPos: -5
   },
   {
-    id: 5, label: 'Chapter 05', title: 'Today.',
+    id: 5, label: 'Chapter 05', title: 'Engineering Emotion',
     text: "Now, I don't just write code. I engineer experiences. I obsess over the intersection of performance, architecture, and emotion. I build systems that scale and interfaces that people actually love to use.",
-    x: -40, y: -10, z: -20, dirX: -1, dirY: 1, progress: 0.73
+    geometry: 'TorusKnot', color: '#ff4b69', zPos: -90, xPos: 5
   },
   {
-    id: 6, label: 'Chapter 06', title: "What's Next.",
+    id: 6, label: 'Chapter 06', title: 'The Horizon',
     text: "The web is evolving, and so am I. From intelligent AI agents to spatial user interaction, the journey is far from over. I'm building for tomorrow, and I'm just getting started.",
-    x: -20, y: 20, z: -60, dirX: 1, dirY: 1, progress: 0.90
+    geometry: 'Sphere', color: '#E5DFD3', zPos: -110, xPos: -5
   },
 ];
 
-// The wire connecting the dots inside the cluster
-const trackCurve = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(-80, 60, 50), 
-  ...chapters.map(ch => new THREE.Vector3(ch.x, ch.y, ch.z)),
-  new THREE.Vector3(10, 40, -80) 
-], false, 'catmullrom', 0.5);
-
-// The camera's orbital path zooming into the cluster
-const cameraOrbitCurve = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(-90, 60, 160),  // Far, wide shot (Zoomed Out)
-  new THREE.Vector3(80, 20, 100),   // Circling right
-  new THREE.Vector3(50, -30, -70),  // Circling behind and down
-  new THREE.Vector3(-40, 15, -90)   // Close up on final nodes (Zoomed In)
-]);
+// --- 3D Elements ---
 
 
-
-const ConnectingThread = ({ scrollProgress }) => {
-  const [drawnPoints, setDrawnPoints] = useState([]);
-  const [headPosition, setHeadPosition] = useState(new THREE.Vector3());
+const StarField = () => {
+  const pointsRef = useRef();
   
-  const allPoints = useMemo(() => trackCurve.getPoints(300), []);
-
-  useFrame(() => {
-    if (scrollProgress) {
-      const p = scrollProgress.get();
-      // Draw progress starts slightly ahead so the line is visible immediately
-      const drawProgress = Math.max(0.01, Math.min(1, p + 0.15));
-      
-      const pointsCount = Math.max(2, Math.floor(drawProgress * allPoints.length));
-      setDrawnPoints(allPoints.slice(0, pointsCount));
-      
-      if (pointsCount > 0) {
-        setHeadPosition(allPoints[pointsCount - 1]);
-      }
-    }
-  });
-
-  return (
-    <>
-      {/* Faint background track */}
-      <Line points={allPoints} color="#E5DFD3" lineWidth={1} opacity={0.05} transparent />
-      
-      {/* Solid growing active line */}
-      {drawnPoints.length > 1 && (
-        <Line 
-          points={drawnPoints}
-          color="#8C2B3D"
-          lineWidth={3.5}
-          opacity={0.9}
-          transparent
-        />
-      )}
-
-      {/* Glowing head of the line (like a comet tip) */}
-      <mesh position={headPosition}>
-        <sphereGeometry args={[1, 16, 16]} />
-        <meshBasicMaterial color="#8C2B3D" />
-      </mesh>
-      
-      {/* Base start point */}
-      <mesh position={allPoints[0]}>
-        <sphereGeometry args={[1, 16, 16]} />
-        <meshBasicMaterial color="#E5DFD3" opacity={0.5} transparent />
-      </mesh>
-
-      {/* Chapter Nodes */}
-      {chapters.map((ch) => (
-        <mesh key={ch.id} position={[ch.x, ch.y, ch.z]}>
-          <sphereGeometry args={[1.5, 16, 16]} />
-          <meshBasicMaterial color="#E5DFD3" opacity={0.3} transparent />
-        </mesh>
-      ))}
-    </>
-  );
-};
-
-const JourneyUniverse = ({ scrollProgress }) => {
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-  const initialized = useRef(false);
-
   const starGeometry = useMemo(() => {
-    const numStars = 6000;
-    const RADIUS = 300; 
+    const numStars = 3000;
     const points = new Float32Array(numStars * 3);
     for (let i = 0; i < numStars; i++) {
-      // Create a massive spherical shell of stars encapsulating the cluster
-      const r = RADIUS + Math.random() * 400;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      
-      points[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      points[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      points[i * 3 + 2] = r * Math.cos(phi);
+      points[i * 3] = (Math.random() - 0.5) * 150;
+      points[i * 3 + 1] = (Math.random() - 0.5) * 150;
+      points[i * 3 + 2] = (Math.random() - 0.5) * 150;
     }
     const geom = new THREE.BufferGeometry();
     geom.setAttribute('position', new THREE.BufferAttribute(points, 3));
     return geom;
   }, []);
 
-  useFrame((state) => {
-    if (scrollProgress) {
-      const p = scrollProgress.get();
-      const safeP = Math.max(0.001, Math.min(0.99, p));
+  useFrame((state, delta) => {
+    if (pointsRef.current) {
+      pointsRef.current.rotation.y -= delta * 0.02;
+    }
+  });
+
+  return (
+    <points ref={pointsRef} geometry={starGeometry}>
+      <pointsMaterial color="#ffffff" size={0.1} transparent opacity={0.4} />
+    </points>
+  );
+};
+
+// 3D Glowing Timeline Thread
+const GlowingThread = ({ scrollProgress }) => {
+  const lineRef = useRef();
+  const headRef = useRef();
+  
+  // Create a beautiful sweeping curve through the geometric nodes
+  const { curve, points, length } = useMemo(() => {
+    const pts = [
+      new THREE.Vector3(0, -10, 10), // start outside
+      ...chapters.map(ch => new THREE.Vector3(ch.xPos * 0.3, 0, ch.zPos)), // thread slightly towards the objects
+      new THREE.Vector3(0, -10, -130) // end deep inside
+    ];
+    const catmull = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.5);
+    return {
+      curve: catmull,
+      points: catmull.getPoints(200),
+      length: catmull.getLength()
+    };
+  }, []);
+
+  useFrame(() => {
+    if (lineRef.current?.material && scrollProgress) {
+      const p = Math.max(0.001, Math.min(1, scrollProgress.get() + 0.15));
       
-      // Camera spirals inward along its orbital path
-      const camPos = cameraOrbitCurve.getPointAt(safeP);
-      
-      // Camera pans to look slightly ahead of the drawing line
-      const lookP = Math.max(0.001, Math.min(0.99, p + 0.1));
-      const lookAtPos = trackCurve.getPointAt(lookP);
-      
-      // Cinematic drift
-      camPos.x += Math.sin(state.clock.elapsedTime * 0.3) * 2;
-      camPos.y += Math.cos(state.clock.elapsedTime * 0.2) * 2;
-      
-      if (!initialized.current) {
-        state.camera.position.copy(camPos);
-        state.camera.lookAt(lookAtPos);
-        initialized.current = true;
-      } else {
-        state.camera.position.lerp(camPos, 0.05);
-        
-        dummy.position.copy(state.camera.position);
-        dummy.lookAt(lookAtPos);
-        state.camera.quaternion.slerp(dummy.quaternion, 0.05);
+      // Update dash offset to draw the line as we scroll
+      const drawLength = p * length;
+      lineRef.current.material.dashOffset = 1000 - drawLength;
+
+      // Update the glowing head position
+      if (headRef.current) {
+        const headPos = curve.getPointAt(Math.min(0.999, p));
+        headRef.current.position.copy(headPos);
       }
-      
-      // Force update the camera's world matrix immediately
-      // This is crucial because drei's <Html> uses it for 2D screen projection in the same frame!
-      state.camera.updateMatrixWorld();
     }
   });
 
   return (
     <>
-      <ambientLight intensity={0.5} />
-      
-      <points geometry={starGeometry}>
-        <pointsMaterial color="#E5DFD3" size={1.5} transparent opacity={0.5} sizeAttenuation={false} />
-      </points>
-
-      <ConnectingThread scrollProgress={scrollProgress} />
+      <Line points={points} color="#ffffff" lineWidth={1} opacity={0.1} transparent />
+      <Line 
+        ref={lineRef}
+        points={points}
+        color="#ff4b69"
+        lineWidth={3}
+        dashed
+        dashSize={1000}
+        gapSize={1000}
+      />
+      <mesh ref={headRef}>
+        <sphereGeometry args={[0.3, 16, 16]} />
+        <meshBasicMaterial color="#ff4b69" />
+        <pointLight color="#ff4b69" intensity={2} distance={20} />
+      </mesh>
     </>
+  );
+};
+
+// Main Scene
+const JourneyScene = ({ scrollProgress }) => {
+  const cameraGroup = useRef();
+
+  useFrame((state) => {
+    if (cameraGroup.current && scrollProgress) {
+      // Smoothly map scroll directly to Z position
+      // Using Framer Motion's smoothProgress ensures this is silky smooth without lerp delays
+      const p = scrollProgress.get();
+      cameraGroup.current.position.z = -(p * 120);
+      
+      // Subtle organic floating
+      cameraGroup.current.position.x = Math.sin(state.clock.elapsedTime * 0.3) * 1.5;
+      cameraGroup.current.position.y = Math.cos(state.clock.elapsedTime * 0.2) * 0.8;
+    }
+  });
+
+  return (
+    <>
+      <ambientLight intensity={0.2} />
+      <directionalLight position={[10, 10, 10]} intensity={1} />
+      <StarField />
+      
+      <group ref={cameraGroup}>
+        <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={60} />
+      </group>
+
+
+
+      <GlowingThread scrollProgress={scrollProgress} />
+      
+      {/* Lightweight Premium Post-Processing */}
+      <EffectComposer>
+        <Bloom luminanceThreshold={0.15} mipmapBlur intensity={1.5} />
+        <Vignette eskil={false} offset={0.1} darkness={1.1} />
+      </EffectComposer>
+    </>
+  );
+};
+
+// --- HTML Overlay Components ---
+const ChapterPanel = ({ chapter, index, smoothProgress }) => {
+  const isEven = index % 2 === 0;
+  
+  // Calculate the active window for this chapter based on scroll progress
+  // Total progress is 0 to 1, we have 6 chapters
+  const step = 1 / 6;
+  const start = index * step - 0.1;
+  const peak = index * step + (step / 2);
+  const end = (index + 1) * step + 0.1;
+
+  const opacity = useTransform(smoothProgress, [start, peak, end], [0, 1, 0]);
+  const y = useTransform(smoothProgress, [start, peak, end], [100, 0, -100]);
+  const scale = useTransform(smoothProgress, [start, peak, end], [0.8, 1, 0.8]);
+
+  return (
+    <motion.div 
+      style={{ opacity, y, scale }}
+      className={`absolute top-1/2 left-0 w-full -translate-y-1/2 px-6 flex ${isEven ? 'justify-start' : 'justify-end'} pointer-events-none`}
+    >
+      <div 
+        className="max-w-lg p-10 rounded-3xl pointer-events-auto border border-white/5 shadow-2xl"
+        style={{
+          background: 'linear-gradient(135deg, rgba(15,15,15,0.8) 0%, rgba(5,5,5,0.9) 100%)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)'
+        }}
+      >
+        <span className="block font-mono text-xs tracking-[0.3em] uppercase mb-4" style={{ color: chapter.color }}>
+          {chapter.label}
+        </span>
+        <h2 className="text-4xl md:text-5xl font-serif italic mb-6 text-[#E5DFD3]">
+          {chapter.title}
+        </h2>
+        <p className="font-sans text-[#E5DFD3]/70 leading-relaxed text-lg font-light">
+          {chapter.text}
+        </p>
+      </div>
+    </motion.div>
   );
 };
 
@@ -195,85 +220,47 @@ export const Journey = () => {
     offset: ["start start", "end end"]
   });
 
-  const smoothProgress = useSpring(scrollYProgress, { damping: 25, stiffness: 60 });
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  React.useEffect(() => {
-    return smoothProgress.onChange((v) => {
-      let index = 0;
-      if (v > 0.15) index = 1;
-      if (v > 0.32) index = 2;
-      if (v > 0.49) index = 3;
-      if (v > 0.66) index = 4;
-      if (v > 0.83) index = 5;
-      setActiveIndex(index);
-    });
-  }, [smoothProgress]);
+  // Extremely smooth spring physics
+  const smoothProgress = useSpring(scrollYProgress, { damping: 25, stiffness: 60, mass: 0.5 });
 
   return (
-    <>
-      {/* Back Button */}
-      <div className="fixed top-6 left-6 z-50">
-        <Link 
-          to="/" 
-          className="flex items-center gap-2 px-4 py-2 bg-[#050505]/80 backdrop-blur-md border border-[#E5DFD3]/20 text-[#E5DFD3] rounded-full hover:bg-[#8C2B3D] hover:border-[#8C2B3D] transition-all duration-300"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-          <span className="font-mono text-[10px] md:text-xs uppercase tracking-[0.2em]">Back</span>
-        </Link>
-      </div>
+    <div className="bg-[#050505] text-[#E5DFD3] selection:bg-[#ff4b69] selection:text-[#E5DFD3]">
+      <BackButton />
 
-      <div 
-        ref={containerRef} 
-        className="relative w-full h-[600vh] bg-[#050505] text-[#E5DFD3] selection:bg-[#8C2B3D] selection:text-[#E5DFD3] font-sans z-30"
-      >
-        <div className="sticky top-0 left-0 w-full h-screen overflow-hidden bg-[#0B1522] z-0">
+      {/* 600vh Container to provide scrollable height */}
+      <div ref={containerRef} className="relative z-10 bg-[#050505] w-full h-[600vh]">
+        
+        {/* Sticky viewport holding the scene */}
+        <div className="sticky top-0 left-0 w-full h-screen overflow-hidden">
+          
+          {/* 3D Canvas */}
           <div className="absolute inset-0 z-0">
-            <Canvas camera={{ fov: 60 }}>
-              <JourneyUniverse scrollProgress={smoothProgress} />
+            <Canvas dpr={[1, 2]}>
+              <JourneyScene scrollProgress={smoothProgress} />
             </Canvas>
           </div>
-          
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B1522] via-transparent to-[#0B1522]/30 pointer-events-none z-10 opacity-60" />
-          
-          {/* Guaranteed Visible UI Overlay */}
-          <div className="absolute inset-0 z-20 pointer-events-none flex items-center justify-center p-6 md:p-24">
+
+          {/* Radial dark gradient for text readability */}
+          <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_#050505_120%)] pointer-events-none" />
+
+          {/* HTML UI Overlay Container */}
+          <div className="absolute inset-0 z-20 pointer-events-none flex items-center justify-center max-w-6xl mx-auto">
             {chapters.map((chapter, index) => (
-              <div 
-                key={chapter.id}
-                className={`absolute transition-all duration-1000 ease-out flex flex-col ${
-                  index === activeIndex 
-                    ? 'opacity-100 translate-y-0 scale-100 blur-none' 
-                    : 'opacity-0 translate-y-12 scale-95 blur-sm'
-                }`}
-                style={{
-                  alignItems: chapter.dirX === 1 ? 'flex-start' : 'flex-end',
-                  textAlign: chapter.dirX === 1 ? 'left' : 'right',
-                  left: chapter.dirX === 1 ? '10%' : 'auto',
-                  right: chapter.dirX === -1 ? '10%' : 'auto',
-                  maxWidth: '450px'
-                }}
-              >
-                <div className="w-12 h-[2px] bg-[#8C2B3D] mb-4 opacity-70" />
-                <span className="block font-mono text-xs md:text-sm tracking-[0.3em] text-[#E5DFD3]/60 uppercase mb-2">
-                  {chapter.label}
-                </span>
-                <h2 className="font-serif italic font-light text-4xl md:text-6xl text-[#E5DFD3] mb-4 drop-shadow-2xl leading-tight">
-                  {chapter.title}
-                </h2>
-                <p className="font-sans font-light text-base md:text-lg text-[#E5DFD3]/80 leading-relaxed">
-                  {chapter.text}
-                </p>
-              </div>
+              <ChapterPanel 
+                key={chapter.id} 
+                chapter={chapter} 
+                index={index} 
+                smoothProgress={smoothProgress} 
+              />
             ))}
           </div>
+
         </div>
       </div>
-
-      <Contact />
-    </>
+      
+      {/* Contact Section at the very bottom */}
+      <Contact standalone={false} curveColor="#050505" />
+    </div>
   );
 };
 

@@ -7,8 +7,8 @@ import { MagneticButton } from '../../../components/ui/MagneticButton';
 const navItems = [
   { label: 'Home', path: '/', id: 'hero' },
   { label: 'My Journey', path: '/journey', id: null },
-  { label: 'My Expertise', path: '/', id: 'about' },
-  { label: 'Dev Toolkit', path: '/', id: 'skills' },
+  { label: 'My Expertise', path: '/expertise', id: null },
+  { label: 'Dev Toolkit', path: '/devtoolkit', id: null },
   { label: 'Made with Passion', path: '/work', id: null },
   { label: 'Let\'s Connect', path: '/', id: 'contact' }
 ];

@@ -6,49 +6,30 @@ import { WorkCarousel } from './WorkCarousel';
 
 const projects = [
   {
-    title: "Portfolio CMS Architecture",
-    overview: "A highly optimized headless CMS built from the ground up to serve developer portfolios with zero latency.",
-    challenge: "Developers often rely on bloated CMS platforms or manual Markdown files, making seamless content updates and media management across different clients unnecessarily complex and slow.",
-    solution: "Architected a custom headless CMS featuring real-time data sync, a robust GraphQL layer, and automated deployment webhooks. The system is designed to trigger static builds instantly upon content publishing.",
-    features: ["Real-time Data Sync", "GraphQL API", "Automated Webhooks", "Custom Dashboard UI"],
-    techStack: ["Node.js", "GraphQL", "MongoDB", "Redis", "React"],
-    results: "Reduced content update workflow time by 80% and achieved a 99.9% cache hit ratio on the edge layer.",
-    lessons: "Mastered the intricacies of cache invalidation strategies and optimizing GraphQL resolvers for deep relational queries.",
-    demoLink: "#",
-    sourceLink: "#"
+    title: "Employee Shop Management",
+    overview: "A comprehensive management system for employees and shop inventory, built to streamline business operations.",
+    challenge: "Managing physical shop inventory while handling employee shifts and permissions required fragmented, offline systems that caused sync issues.",
+    solution: "Built a centralized web portal providing role-based access control, real-time inventory tracking, and employee management all in one place.",
+    features: ["Role-based Access", "Inventory Sync", "Employee Dashboard", "Sales Tracking"],
+    techStack: ["React", "Node.js", "Express", "MongoDB", "Tailwind"],
+    results: "Streamlined daily operations and drastically reduced inventory discrepancy.",
+    lessons: "Learned how to effectively model relational data in MongoDB and handle JWT-based authentication flows securely.",
+    image: "https://opengraph.githubassets.com/1/ronakpremjani/employee-shop-management",
+    demoLink: "https://luckystoreem.vercel.app",
+    sourceLink: "https://github.com/ronakpremjani/employee-shop-management"
   },
   {
-    title: "Enterprise Analytics Dashboard",
-    overview: "A high-performance financial analytics dashboard processing and visualizing massive datasets in real-time.",
-    challenge: "Rendering millions of data points on the client-side was causing severe main-thread blocking, leading to an unresponsive UI and poor user experience for enterprise clients.",
-    solution: "Implemented WebGL for hardware-accelerated data visualization and aggressive client-side caching. Offloaded heavy data transformation to Web Workers to keep the UI thread completely unblocked.",
-    features: ["WebGL Rendering", "Web Worker Processing", "Real-time WebSockets", "Custom Charting"],
-    techStack: ["TypeScript", "WebGL", "React", "PostgreSQL", "Go"],
-    results: "Achieved a consistent 60fps rendering performance for datasets exceeding 5 million rows, eliminating UI freezing.",
-    lessons: "Deepened my understanding of browser memory management, garbage collection pausing, and WebGL context limitations.",
-    demoLink: "#",
-    sourceLink: "#"
-  },
-  {
-    title: "E-Commerce Checkout Flow",
-    overview: "A seamless, high-conversion checkout experience for a modern lifestyle brand.",
-    techStack: ["Next.js", "Tailwind", "Stripe", "Framer Motion"],
-    demoLink: "#",
-    sourceLink: "#"
-  },
-  {
-    title: "Web3 NFT Marketplace",
-    overview: "A decentralized application for minting and trading digital assets on the Ethereum blockchain.",
-    techStack: ["Solidity", "Ethers.js", "React", "Hardhat"],
-    demoLink: "#",
-    sourceLink: "#"
-  },
-  {
-    title: "AI Image Generator",
-    overview: "Generate stunning images from text prompts using Stable Diffusion.",
-    techStack: ["Python", "PyTorch", "React", "FastAPI"],
-    demoLink: "#",
-    sourceLink: "#"
+    title: "GitHub Profile & Portfolio",
+    overview: "My personal GitHub repository containing my profile readme and portfolio configurations.",
+    challenge: "Creating a standout developer presence requires more than just code; it requires a centralized place to showcase identity, stats, and pinned work.",
+    solution: "Designed a dynamic GitHub profile README leveraging automated workflows and a custom-built portfolio interface.",
+    features: ["Dynamic Stats", "Automated Workflows", "Custom Portfolio Integration"],
+    techStack: ["Markdown", "GitHub Actions", "React"],
+    results: "Created a highly visible, automated developer profile that requires zero manual maintenance.",
+    lessons: "Gained experience in writing robust CI/CD pipelines using GitHub Actions to automate content generation.",
+    image: "https://opengraph.githubassets.com/1/ronakpremjani/ronakpremjani",
+    demoLink: "https://github.com/ronakpremjani/ronakpremjani",
+    sourceLink: "https://github.com/ronakpremjani/ronakpremjani"
   }
 ];
 
