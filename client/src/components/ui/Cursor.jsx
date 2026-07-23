@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCursor } from '../../hooks/useCursor';
-import { cn } from './Container';
+import { cn } from './container';
 
 export const Cursor = () => {
   const { cursorRef, cursorState, hidden, isTouch } = useCursor();
