@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Container } from '../../../components/ui/Container';
+import { Container } from '../../../components/ui/container';
 import { useReveal } from '../../../hooks/useReveal';
 import { useTextReveal } from '../../../hooks/useTextReveal';
 

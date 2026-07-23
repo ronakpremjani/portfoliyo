@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container } from '../../../components/ui/Container';
+import { Container } from '../../../components/ui/container';
 import { MagneticButton } from '../../../components/ui/MagneticButton';
 import { ArrowDownLeft } from 'lucide-react';
 import gsap from 'gsap';

@@ -1,6 +1,6 @@
 import React, { useRef, memo } from 'react';
 import { motion } from 'framer-motion';
-import { Container } from '../../../components/ui/Container';
+import { Container } from '../../../components/ui/container';
 import { useReveal } from '../../../hooks/useReveal';
 import { trackSocialClick } from '../../../utils/analytics';
 

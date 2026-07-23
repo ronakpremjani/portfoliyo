@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Container } from '../../../components/ui/Container';
+import { Container } from '../../../components/ui/container';
 import { SectionTitle } from '../../../components/ui/SectionTitle';
 import { useReveal } from '../../../hooks/useReveal';
 import { useTextReveal } from '../../../hooks/useTextReveal';

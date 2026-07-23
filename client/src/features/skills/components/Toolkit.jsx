@@ -1,7 +1,7 @@
 import React, { useRef, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useScroll } from 'framer-motion';
-import { Container } from '../../../components/ui/Container';
+import { Container } from '../../../components/ui/container';
 import { useTextReveal } from '../../../hooks/useTextReveal';
 import { WarpSpeedUniverse } from './WarpSpeedUniverse';
 

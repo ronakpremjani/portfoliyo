@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Container } from '../../../components/ui/Container';
+import { Container } from '../../../components/ui/container';
 
 export const Hero = () => {
   const containerRef = useRef(null);
