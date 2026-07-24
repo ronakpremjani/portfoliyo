@@ -5,37 +5,63 @@ import { useTextReveal } from '../../../hooks/useTextReveal';
 
 const experiences = [
   {
-    role: "Senior Software Engineer",
-    company: "TechNova Solutions",
-    period: "2023 - Present",
-    description: "Lead the architecture and development of an enterprise-level SaaS platform servicing over 10,000 daily active users.",
+    role: "Freelance MERN Developer",
+    company: "Remote • Self-Employed",
+    period: "2025 - Present",
+    description:
+      "Building modern, responsive, and scalable web applications for clients and personal ventures using the MERN ecosystem.",
     achievements: [
-      "Reduced core API response times by 40% through Redis caching strategies.",
-      "Established a comprehensive UI component library, reducing frontend development time by 30%."
+      "Developed full-stack web applications with React, Node.js, Express, and MongoDB.",
+      "Focused on performance, responsive UI, authentication, and clean architecture.",
+      "Continuously improving client communication, UI/UX, and deployment workflows."
     ],
-    technologies: ["React", "TypeScript", "Node.js", "Redis", "GraphQL"]
+    technologies: [
+      "React",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "Tailwind CSS",
+      "Git"
+    ]
   },
+
   {
-    role: "Full Stack Engineer",
-    company: "Digital Edge Agency",
-    period: "2020 - 2023",
-    description: "Engineered robust web applications for diverse e-commerce and fintech clients from concept to deployment.",
+    role: "Personal Projects & Open Source",
+    company: "Building in Public",
+    period: "2024 - 2025",
+    description:
+      "Designing and developing products that solve real-world problems while exploring interactive experiences and scalable architectures.",
     achievements: [
-      "Architected a scalable payment processing microservice handling $2M+ in monthly transactions.",
-      "Migrated a legacy monolith to a Next.js/Express architecture, improving SEO and load times."
+      "Developed a portfolio with immersive animations and modern UI interactions.",
+      "Built full-stack applications including authentication, dashboards, and REST APIs.",
+      "Regularly publish projects on GitHub while experimenting with new technologies."
     ],
-    technologies: ["Next.js", "Express", "PostgreSQL", "Docker", "AWS"]
+    technologies: [
+      "Next.js",
+      "Three.js",
+      "Framer Motion",
+      "PostgreSQL"
+    ]
   },
+
   {
-    role: "Frontend Developer",
-    company: "StartUp Inc",
-    period: "2018 - 2020",
-    description: "Spearheaded the development of a highly interactive consumer-facing web application, focusing on responsive design and fluid UX.",
+    role: "Computer Applications Student",
+    college: "JG University",
+    period: "2023 - 2024",
+    description:
+      "Pursuing a Bachelor's degree while building practical software engineering skills through projects, hackathons, and continuous learning.",
     achievements: [
-      "Implemented complex data visualizations using D3.js and Canvas.",
-      "Optimized bundle size by 50% using Webpack code-splitting."
+      "Built numerous frontend and full-stack projects beyond the academic curriculum.",
+      "Participated in hackathons and collaborative development projects.",
+      "Learning system design, backend architecture, cloud deployment, and scalable applications."
     ],
-    technologies: ["JavaScript", "React", "D3.js", "Webpack", "CSS"]
+    technologies: [
+      "JavaScript",
+      "TypeScript",
+      "HTML",
+      "CSS",
+      "GitHub"
+    ]
   }
 ];
 

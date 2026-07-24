@@ -6,6 +6,7 @@ import Work from '../pages/work';
 import Journey from '../pages/journey';
 import Expertise from '../pages/expertise';
 import DevToolkit from '../pages/devtoolkit';
+import ContactPage from '../pages/contact';
 
 export const AppRoutes = () => {
   return (
@@ -15,6 +16,7 @@ export const AppRoutes = () => {
       <Route path="/journey" element={<Journey />} />
       <Route path="/expertise" element={<Expertise />} />
       <Route path="/devtoolkit" element={<DevToolkit />} />
+      <Route path="/contact" element={<ContactPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

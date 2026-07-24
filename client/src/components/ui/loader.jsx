@@ -2,17 +2,41 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLenisContext } from '../../app/app';
 
+let hasVisitedThisSession = false;
+
 export const Loader = () => {
   const [progress, setProgress] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => !hasVisitedThisSession);
+  const [isScrollLocked, setIsScrollLocked] = useState(() => !hasVisitedThisSession);
   const { lenis } = useLenisContext();
   
   const canvasRef = useRef(null);
   const progressRef = useRef(0);
 
+  // Lock body scroll while loading
+  useEffect(() => {
+    if (isScrollLocked) {
+      window.scrollTo(0, 0);
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.touchAction = 'none';
+    } else {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.documentElement.style.touchAction = '';
+    }
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.documentElement.style.touchAction = '';
+    };
+  }, [isScrollLocked]);
+
   // Handle the progress incrementing
   useEffect(() => {
+    if (!isLoading) return;
+
     if (lenis) lenis.stop();
     
     const interval = setInterval(() => {
@@ -25,7 +49,13 @@ export const Loader = () => {
         setTimeout(() => setIsExiting(true), 200); // Small hold at 100%
         setTimeout(() => {
           setIsLoading(false);
-          if (lenis) lenis.start();
+          hasVisitedThisSession = true;
+          
+          // 2 second pause before unlocking scrolling
+          setTimeout(() => {
+            setIsScrollLocked(false);
+            if (lenis) lenis.start();
+          }, 2000);
         }, 1200); // Wait for exit animation to finish
       }
       setProgress(progressRef.current);
@@ -35,10 +65,12 @@ export const Loader = () => {
       clearInterval(interval);
       if (lenis) lenis.start();
     };
-  }, [lenis]);
+  }, [lenis, isLoading]);
 
   // Handle the Canvas rendering
   useEffect(() => {
+    if (!isLoading) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');

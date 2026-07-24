@@ -10,34 +10,69 @@ import { Contact } from '../features/contact/components/Contact';
 // --- Content ---
 const chapters = [
   {
-    id: 1, label: 'Chapter 01', title: 'The Spark',
-    text: "It didn't start with code. It started with a question: How do things work behind the glass? My curiosity about technology turned into an obsession. I wasn't just consuming the web anymore—I wanted to build it.",
-    geometry: 'Icosahedron', color: '#3b82f6', zPos: -10, xPos: 5
+    id: 1,
+    label: "Chapter 01",
+    title: "The Curiosity",
+    text: "Every journey starts with a question. Mine was simple: 'How do websites actually work?' That curiosity pushed me beyond simply using technology—I wanted to understand it, build it, and eventually create experiences that people enjoy using.",
+    geometry: "Icosahedron",
+    color: "#3b82f6",
+    zPos: -10,
+    xPos: 5,
   },
+
   {
-    id: 2, label: 'Chapter 02', title: 'Building the Foundation',
-    text: "The excitement of seeing a blank screen turn into something interactive was intoxicating. Every broken layout was a puzzle. Every late night spent wrestling with logic was a lesson in patience and precision.",
-    geometry: 'Box', color: '#8b5cf6', zPos: -30, xPos: -5
+    id: 2,
+    label: "Chapter 02",
+    title: "Learning to Build",
+    text: "I started with HTML, CSS, and JavaScript. Every broken layout, every bug, and every late-night debugging session became another lesson. Slowly, I discovered that consistency matters more than talent.",
+    geometry: "Box",
+    color: "#8b5cf6",
+    zPos: -30,
+    xPos: -5,
   },
+
   {
-    id: 3, label: 'Chapter 03', title: 'Discovering Architecture',
-    text: "Beautiful interfaces weren't enough. I wanted to understand the systems that powered them. I dove deep into databases and servers, realizing that true engineering happens when the architecture is as elegant as the design.",
-    geometry: 'Torus', color: '#ec4899', zPos: -50, xPos: 5
+    id: 3,
+    label: "Chapter 03",
+    title: "Beyond the Frontend",
+    text: "Creating beautiful interfaces wasn't enough. I wanted to know what happened behind every button click. That led me into React, Node.js, Express, MongoDB, APIs, authentication, and the architecture behind modern applications.",
+    geometry: "Torus",
+    color: "#ec4899",
+    zPos: -50,
+    xPos: 5,
   },
+
   {
-    id: 4, label: 'Chapter 04', title: 'The Resistance',
-    text: "Growth didn't come from success—it came from broken deployments, failed ideas, and deep architectural flaws. I learned to love the friction. It forced me to think systematically, proving that persistence is a developer's greatest asset.",
-    geometry: 'Octahedron', color: '#ef4444', zPos: -70, xPos: -5
+    id: 4,
+    label: "Chapter 04",
+    title: "Building Through Failure",
+    text: "Some of my biggest lessons came from projects that didn't work. Deployment errors, broken builds, rejected ideas, and countless debugging sessions taught me something every successful project shares—persistence.",
+    geometry: "Octahedron",
+    color: "#ef4444",
+    zPos: -70,
+    xPos: -5,
   },
+
   {
-    id: 5, label: 'Chapter 05', title: 'Engineering Emotion',
-    text: "Now, I don't just write code. I engineer experiences. I obsess over the intersection of performance, architecture, and emotion. I build systems that scale and interfaces that people actually love to use.",
-    geometry: 'TorusKnot', color: '#ff4b69', zPos: -90, xPos: 5
+    id: 5,
+    label: "Chapter 05",
+    title: "Creating Experiences",
+    text: "Today, I enjoy building full-stack applications where thoughtful design meets reliable engineering. I focus on creating products that are fast, scalable, and memorable—because great software should feel effortless to use.",
+    geometry: "TorusKnot",
+    color: "#ff4b69",
+    zPos: -90,
+    xPos: 5,
   },
+
   {
-    id: 6, label: 'Chapter 06', title: 'The Horizon',
-    text: "The web is evolving, and so am I. From intelligent AI agents to spatial user interaction, the journey is far from over. I'm building for tomorrow, and I'm just getting started.",
-    geometry: 'Sphere', color: '#E5DFD3', zPos: -110, xPos: -5
+    id: 6,
+    label: "Chapter 06",
+    title: "The Journey Ahead",
+    text: "I'm still at the beginning of my journey. My goal is to build products that make an impact, contribute to open source, collaborate with ambitious people, and keep learning every single day. The best chapter is still unwritten.",
+    geometry: "Sphere",
+    color: "#E5DFD3",
+    zPos: -110,
+    xPos: -5,
   },
 ];
 

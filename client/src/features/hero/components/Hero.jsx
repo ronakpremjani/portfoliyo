@@ -53,7 +53,7 @@ export const Hero = () => {
         >
           <div className="flex flex-col text-right">
             <span className="opacity-50">Located in</span>
-            <span>New Delhi, India</span>
+            <span>Ahemdabad , India</span>
           </div>
           <div className="flex flex-col text-right hidden md:flex">
             <span className="opacity-50">Status</span>

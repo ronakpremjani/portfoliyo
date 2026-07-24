@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Container } from '../../../components/ui/container';
 import { MagneticButton } from '../../../components/ui/MagneticButton';
 import { ArrowDownLeft } from 'lucide-react';
@@ -140,9 +141,9 @@ export const Contact = ({ standalone = false, curveColor = '#1A2A40' }) => {
                 <div className="w-full h-px bg-[#1A2A40]/20 absolute top-1/2 -translate-y-1/2" />
                 <div className="flex justify-end relative z-10 md:pr-24 lg:pr-32">
                   <MagneticButton className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-[#1A2A40] text-[#E5DFD3] flex items-center justify-center group overflow-hidden border-none cursor-pointer">
-                    <a href="mailto:ronakpremjani@gmail.com" className="relative z-10 text-sm md:text-lg font-medium tracking-wider">
+                    <Link to="/contact" className="relative z-10 text-sm md:text-lg font-medium tracking-wider">
                       Get in touch
-                    </a>
+                    </Link>
                     <div className="absolute inset-0 bg-[#8C2B3D] scale-y-0 group-hover:scale-y-100 origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] z-0 rounded-full" />
                   </MagneticButton>
                 </div>
@@ -150,8 +151,8 @@ export const Contact = ({ standalone = false, curveColor = '#1A2A40' }) => {
               
               {/* Contact Pills */}
               <div className="flex flex-col md:flex-row gap-3 md:gap-4 mb-4 md:mb-8">
-                <a href="mailto:ronakpremjani@gmail.com" className="px-6 py-4 md:px-10 md:py-5 border border-[#1A2A40]/30 rounded-full hover:bg-[#1A2A40]/5 transition-colors text-sm md:text-base lg:text-lg font-medium w-fit">
-                  ronakpremjani@gmail.com
+                <a href="mailto:ronakpremjani8@gmail.com" className="px-6 py-4 md:px-10 md:py-5 border border-[#1A2A40]/30 rounded-full hover:bg-[#1A2A40]/5 transition-colors text-sm md:text-base lg:text-lg font-medium w-fit">
+                  ronakpremjani8@gmail.com
                 </a>
                 <a href="tel:+918849240653" className="px-6 py-4 md:px-10 md:py-5 border border-[#1A2A40]/30 rounded-full hover:bg-[#1A2A40]/5 transition-colors text-sm md:text-base lg:text-lg font-medium w-fit">
                   +91 88492 40653
@@ -163,7 +164,7 @@ export const Contact = ({ standalone = false, curveColor = '#1A2A40' }) => {
                 <div className="flex gap-16 md:gap-32">
                   <div className="flex flex-col gap-2 md:gap-3">
                     <span className="text-[#1A2A40]/40 uppercase text-[10px] font-semibold tracking-widest">Version</span>
-                    <span className="text-[#1A2A40] text-sm md:text-base">2024 © Edition</span>
+                    <span className="text-[#1A2A40] text-sm md:text-base">2026 © Edition</span>
                   </div>
                   <div className="flex flex-col gap-2 md:gap-3">
                     <span className="text-[#1A2A40]/40 uppercase text-[10px] font-semibold tracking-widest">Local Time</span>
@@ -173,10 +174,15 @@ export const Contact = ({ standalone = false, curveColor = '#1A2A40' }) => {
                 <div className="flex flex-col gap-2 md:gap-3">
                   <span className="text-[#1A2A40]/40 uppercase text-[10px] font-semibold tracking-widest">Socials</span>
                   <div className="flex gap-4 md:gap-6">
-                    {['LinkedIn', 'GitHub', 'Twitter', 'Instagram'].map(social => (
-                      <a key={social} href="#" className="relative group overflow-hidden text-[#1A2A40] text-sm md:text-base">
-                        <span className="inline-block transition-transform duration-300 group-hover:-translate-y-[120%]">{social}</span>
-                        <span className="inline-block absolute left-0 top-0 translate-y-[120%] transition-transform duration-300 group-hover:translate-y-0">{social}</span>
+                    {[
+                      { name: 'LinkedIn', url: 'https://www.linkedin.com/in/ronak-premjani-10b06a33b/' },
+                      { name: 'GitHub', url: 'https://github.com/ronakpremjani' },
+                      { name: 'Twitter', url: 'https://x.com/premjani_ronak' },
+                      { name: 'Instagram', url: 'https://www.instagram.com/ronak_premjani/' }
+                    ].map(social => (
+                      <a key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className="relative group overflow-hidden text-[#1A2A40] text-sm md:text-base">
+                        <span className="inline-block transition-transform duration-300 group-hover:-translate-y-[120%]">{social.name}</span>
+                        <span className="inline-block absolute left-0 top-0 translate-y-[120%] transition-transform duration-300 group-hover:translate-y-0">{social.name}</span>
                       </a>
                     ))}
                   </div>
